@@ -4,13 +4,13 @@
 			"image": "texture.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 960,
-				"h": 304
+				"w": 980,
+				"h": 824
 			},
 			"scale": 1,
 			"frames": [
 				{
-					"filename": "chubrik1_3",
+					"filename": "fire_chubrik (4)",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -18,20 +18,20 @@
 						"h": 384
 					},
 					"spriteSourceSize": {
-						"x": 120,
-						"y": 48,
-						"w": 192,
-						"h": 256
+						"x": 112,
+						"y": 32,
+						"w": 200,
+						"h": 296
 					},
 					"frame": {
 						"x": 4,
 						"y": 4,
-						"w": 192,
-						"h": 256
+						"w": 200,
+						"h": 296
 					}
 				},
 				{
-					"filename": "chubrik1_2",
+					"filename": "fire_chubrik (2)",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -45,10 +45,31 @@
 						"h": 272
 					},
 					"frame": {
-						"x": 204,
+						"x": 212,
 						"y": 4,
 						"w": 192,
 						"h": 272
+					}
+				},
+				{
+					"filename": "fire_chubrik (3)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 384,
+						"h": 384
+					},
+					"spriteSourceSize": {
+						"x": 120,
+						"y": 48,
+						"w": 192,
+						"h": 256
+					},
+					"frame": {
+						"x": 212,
+						"y": 284,
+						"w": 192,
+						"h": 256
 					}
 				},
 				{
@@ -66,14 +87,14 @@
 						"h": 280
 					},
 					"frame": {
-						"x": 404,
+						"x": 412,
 						"y": 4,
 						"w": 168,
 						"h": 280
 					}
 				},
 				{
-					"filename": "chubrik1_1",
+					"filename": "fire_chubrik (1)",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
@@ -87,31 +108,220 @@
 						"h": 280
 					},
 					"frame": {
-						"x": 580,
-						"y": 4,
+						"x": 412,
+						"y": 292,
 						"w": 168,
 						"h": 280
 					}
 				},
 				{
-					"filename": "chubrik1_4",
+					"filename": "chubrik2",
 					"rotated": false,
 					"trimmed": true,
 					"sourceSize": {
-						"w": 384,
-						"h": 384
+						"w": 256,
+						"h": 256
 					},
 					"spriteSourceSize": {
-						"x": 112,
-						"y": 32,
-						"w": 200,
-						"h": 296
+						"x": 44,
+						"y": 28,
+						"w": 208,
+						"h": 216
 					},
 					"frame": {
-						"x": 756,
+						"x": 4,
+						"y": 548,
+						"w": 208,
+						"h": 216
+					}
+				},
+				{
+					"filename": "water_chubrik (3)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 44,
+						"y": 28,
+						"w": 208,
+						"h": 216
+					},
+					"frame": {
+						"x": 220,
+						"y": 580,
+						"w": 208,
+						"h": 216
+					}
+				},
+				{
+					"filename": "earth_chubrik (2)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 24,
+						"w": 220,
+						"h": 200
+					},
+					"frame": {
+						"x": 436,
+						"y": 580,
+						"w": 220,
+						"h": 200
+					}
+				},
+				{
+					"filename": "earth_chubrik (3)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 24,
+						"w": 220,
+						"h": 200
+					},
+					"frame": {
+						"x": 588,
 						"y": 4,
-						"w": 200,
-						"h": 296
+						"w": 220,
+						"h": 200
+					}
+				},
+				{
+					"filename": "earth_chubrik",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 24,
+						"w": 220,
+						"h": 200
+					},
+					"frame": {
+						"x": 588,
+						"y": 212,
+						"w": 220,
+						"h": 200
+					}
+				},
+				{
+					"filename": "earth_chubrik (1)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 24,
+						"w": 220,
+						"h": 196
+					},
+					"frame": {
+						"x": 664,
+						"y": 420,
+						"w": 220,
+						"h": 196
+					}
+				},
+				{
+					"filename": "earth_chubrik (4)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 24,
+						"w": 220,
+						"h": 196
+					},
+					"frame": {
+						"x": 664,
+						"y": 624,
+						"w": 220,
+						"h": 196
+					}
+				},
+				{
+					"filename": "water_chubrik (4)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 48,
+						"y": 32,
+						"w": 176,
+						"h": 184
+					},
+					"frame": {
+						"x": 4,
+						"y": 308,
+						"w": 176,
+						"h": 184
+					}
+				},
+				{
+					"filename": "water_chubrik (2)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 48,
+						"y": 44,
+						"w": 160,
+						"h": 164
+					},
+					"frame": {
+						"x": 816,
+						"y": 4,
+						"w": 160,
+						"h": 164
+					}
+				},
+				{
+					"filename": "water_chubrik (1)",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 256,
+						"h": 256
+					},
+					"spriteSourceSize": {
+						"x": 48,
+						"y": 64,
+						"w": 160,
+						"h": 160
+					},
+					"frame": {
+						"x": 816,
+						"y": 176,
+						"w": 160,
+						"h": 160
 					}
 				}
 			]
