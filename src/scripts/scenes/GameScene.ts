@@ -27,6 +27,7 @@ export default class GameScene extends CustomScene
 
 	create()
 	{
+		this.camera.setBackgroundColor("#212C36")
 		this.createGrid(); //создать поле
 		this.createFireChubrik(); //создать огненного чубрика
 		this.createWaterChubrik(); //создать водяного чубрика
@@ -38,7 +39,7 @@ export default class GameScene extends CustomScene
 
 	createGrid()
 	{
-		this.cols = 10; //столбцы
+		this.cols = 16; //столбцы
 		this.rows = 10; //строчки
 		this.cellSize = 32; //размер одной клетки в пикселях
 		this.width = this.cols * this.cellSize; //ширина доски в пикселях
@@ -52,6 +53,8 @@ export default class GameScene extends CustomScene
 				const rect = this.add.rectangle(pos.x, pos.y, this.cellSize, this.cellSize, 0x00ff00, 0.25); //создаем прямоугольник в полученных координатах
 				rect.setStrokeStyle(2, 0x000000, 1); //неважно
 				rect.isStroked = true; //неважно
+				const frame = Phaser.Math.RND.pick([Main.grass1, Main.grass2, Main.grass3, Main.grass4]); //выбираем случайную картинку
+				const grass = this.add.image(pos.x, pos.y, Main.Key, frame); //создаем травяную клеточку
 			}
 		}
 	}
@@ -144,13 +147,11 @@ export default class GameScene extends CustomScene
 		});
 	}
 
-
-
 	getWorldPosition(col: number, row: number)
 	{
 		return {
 			x: col * this.cellSize - this.width * .5 + this.cellSize * .5,
-			y: row * this.cellSize - this.width * .5 + this.cellSize * .5
+			y: row * this.cellSize - this.height * .5 + this.cellSize * .5
 		}
 	}
 
@@ -158,7 +159,7 @@ export default class GameScene extends CustomScene
 	{
 		return {
 			col: Math.floor((x + this.width * .5) / this.cellSize),
-			row: Math.floor((y + this.width * .5) / this.cellSize)
+			row: Math.floor((y + this.height * .5) / this.cellSize)
 		}
 	}
 

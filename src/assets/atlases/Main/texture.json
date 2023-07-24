@@ -323,6 +323,90 @@
 						"w": 160,
 						"h": 160
 					}
+				},
+				{
+					"filename": "grass1",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 4,
+						"y": 500,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "grass2",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 44,
+						"y": 500,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "grass3",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 84,
+						"y": 500,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "grass4",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 124,
+						"y": 500,
+						"w": 32,
+						"h": 32
+					}
 				}
 			]
 		}
