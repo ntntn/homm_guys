@@ -1,0 +1,124 @@
+{
+	"textures": [
+		{
+			"image": "texture.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 960,
+				"h": 304
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "chubrik1_3",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 384,
+						"h": 384
+					},
+					"spriteSourceSize": {
+						"x": 120,
+						"y": 48,
+						"w": 192,
+						"h": 256
+					},
+					"frame": {
+						"x": 4,
+						"y": 4,
+						"w": 192,
+						"h": 256
+					}
+				},
+				{
+					"filename": "chubrik1_2",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 384,
+						"h": 384
+					},
+					"spriteSourceSize": {
+						"x": 120,
+						"y": 32,
+						"w": 192,
+						"h": 272
+					},
+					"frame": {
+						"x": 204,
+						"y": 4,
+						"w": 192,
+						"h": 272
+					}
+				},
+				{
+					"filename": "chubrik1",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 384,
+						"h": 384
+					},
+					"spriteSourceSize": {
+						"x": 128,
+						"y": 16,
+						"w": 168,
+						"h": 280
+					},
+					"frame": {
+						"x": 404,
+						"y": 4,
+						"w": 168,
+						"h": 280
+					}
+				},
+				{
+					"filename": "chubrik1_1",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 384,
+						"h": 384
+					},
+					"spriteSourceSize": {
+						"x": 128,
+						"y": 16,
+						"w": 168,
+						"h": 280
+					},
+					"frame": {
+						"x": 580,
+						"y": 4,
+						"w": 168,
+						"h": 280
+					}
+				},
+				{
+					"filename": "chubrik1_4",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 384,
+						"h": 384
+					},
+					"spriteSourceSize": {
+						"x": 112,
+						"y": 32,
+						"w": 200,
+						"h": 296
+					},
+					"frame": {
+						"x": 756,
+						"y": 4,
+						"w": 200,
+						"h": 296
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://github.com/odrick/free-tex-packer-core",
+		"version": "0.3.4"
+	}
+}

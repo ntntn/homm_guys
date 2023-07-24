@@ -66,6 +66,7 @@ export const resources = {
         particle: 'assets/img/particle.png',
     },
     atlases: {
+        Main: { image: 'Main/texture.png', json: 'Main/texture.json' },
         axe: { image: 'slash/texture.png', json: 'slash/texture.json' },
         sword: { image: 'sword/texture.png', json: 'sword/texture.json' },
         garlic: { image: 'aura/texture.png', json: 'aura/texture.json' },
@@ -97,12 +98,12 @@ export const resources = {
     }
 }
 
-export const Images = valToKey(resources.images);
-export const Atlases = valToKey(resources.atlases);
-export const Audios = valToKey(resources.audios);
+export const Images = valToKey(resources.images) as any;
+export const Atlases = valToKey(resources.atlases) as any;
+export const Audios = valToKey(resources.audios) as any;
 
 // function valToKey<T>(obj: T): {[K in keyof T]: {[U in keyof T[K]]: string}} {
-function valToKey<T>(obj: T): { [K in keyof T]: string }
+function valToKey<T>(obj: any): { [K in keyof T]: string }
 {
     const data = {} as any;
     Object.entries(obj).forEach(e =>
@@ -135,3 +136,6 @@ export const Food = { Key: Atlases.Food, ...FoodKeys };
 
 import EffectsKeys from '../assets/atlases/Effects/keys.json';
 export const Effects = { Key: Atlases.Effects, ...EffectsKeys };
+
+import MainKeys from '../assets/atlases/Main/keys.json';     
+export const Main = { Key: Atlases.Main, ...MainKeys }; 

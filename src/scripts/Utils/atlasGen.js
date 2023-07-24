@@ -23,7 +23,7 @@ function generateKeysJSON(images, atlasFolder) {
 function printImportSnippets(atlasFolder) {
     const atlasName = path.basename(atlasFolder);
     const assetString = `\t${atlasName}: { image: '${atlasName}/texture.png', json: '${atlasName}/texture.json' },`
-    const importString = `\timport ${atlasName}Keys from './assets/atlases/${atlasName}/keys.json';`
+    const importString = `\timport ${atlasName}Keys from '../assets/atlases/${atlasName}/keys.json';`
     const atlasObjectString = `\texport const ${atlasName} = { Key: Atlases.${atlasName}, ...${atlasName}Keys };`
 
     console.log(assetString);

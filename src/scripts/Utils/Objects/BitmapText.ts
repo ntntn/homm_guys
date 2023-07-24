@@ -7,7 +7,7 @@ export class BitmapText extends Phaser.GameObjects.BitmapText {
     getBounds() {
         const wt = this.getWorldTransformMatrix();
         const rectData = this.getTextBounds().local;
-        return new Phaser.Geom.Rectangle(wt.tx - rectData.width * 0.5, wt.ty - rectData.height * 0.5, rectData.width, rectData.height);
+        return new Phaser.Geom.Rectangle(wt.tx - rectData.width * 0.5, wt.ty - rectData.height * 0.5, rectData.width, rectData.height) as any;
     }
 
     private static list: BitmapText[] = [];
