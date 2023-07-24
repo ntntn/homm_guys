@@ -1,0 +1,103 @@
+{
+	"textures": [
+		{
+			"image": "texture.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 459,
+				"h": 552
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "StatsBg1",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 259,
+						"h": 445
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 259,
+						"h": 445
+					},
+					"frame": {
+						"x": 4,
+						"y": 4,
+						"w": 259,
+						"h": 445
+					}
+				},
+				{
+					"filename": "StatsBg",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 399,
+						"h": 91
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 399,
+						"h": 91
+					},
+					"frame": {
+						"x": 4,
+						"y": 457,
+						"w": 399,
+						"h": 91
+					}
+				},
+				{
+					"filename": "bgBtn",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 184,
+						"h": 58
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 184,
+						"h": 58
+					},
+					"frame": {
+						"x": 271,
+						"y": 4,
+						"w": 184,
+						"h": 58
+					}
+				},
+				{
+					"filename": "skull",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 64,
+						"h": 70
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 3,
+						"w": 55,
+						"h": 65
+					},
+					"frame": {
+						"x": 271,
+						"y": 70,
+						"w": 55,
+						"h": 65
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://github.com/odrick/free-tex-packer-core",
+		"version": "0.3.4"
+	}
+}

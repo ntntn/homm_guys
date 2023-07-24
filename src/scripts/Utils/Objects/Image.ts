@@ -1,0 +1,1 @@
+export class Image extends Phaser.GameObjects.Image {}
