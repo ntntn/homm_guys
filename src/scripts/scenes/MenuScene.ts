@@ -13,6 +13,7 @@ export default class MenuScene extends CustomScene
 
 	create()
 	{
+		this.camera.setBackgroundColor("#212C36")
 		this.add.text(0, -100, "ГЕРОИ МЕЧА И МАГИИ 10").setOrigin(0.5).setAlign("center");
 
 		const playButton = this.add.text(0, 0, "Играть").setOrigin(0.5).setAlign("center");
@@ -26,6 +27,7 @@ export default class MenuScene extends CustomScene
 				duration: 125,
 				onComplete: () => {
 					this.scene.start("GameScene");
+					this.scene.stop();
 				}
 			});
 		})

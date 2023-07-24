@@ -190,7 +190,7 @@ export class CustomScene extends Phaser.Scene
 		});
 	}
 
-	show(duration = 500)
+	show(duration = 250)
 	{
 		return new Promise<void>(res =>
 		{
