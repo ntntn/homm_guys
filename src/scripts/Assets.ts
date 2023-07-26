@@ -95,12 +95,17 @@ export const resources = {
 
     audios: {
         S1: 'assets/audio/s1.mp3'
+    },
+    
+    jsons: {
+        Chubriks: 'assets/jsons/Chubriks.json'
     }
 }
 
 export const Images = valToKey(resources.images) as any;
 export const Atlases = valToKey(resources.atlases) as any;
 export const Audios = valToKey(resources.audios) as any;
+export const Jsons = valToKey(resources.jsons) as any;
 
 // function valToKey<T>(obj: T): {[K in keyof T]: {[U in keyof T[K]]: string}} {
 function valToKey<T>(obj: any): { [K in keyof T]: string }

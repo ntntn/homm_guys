@@ -30,6 +30,13 @@ export default class PreloadScene extends Phaser.Scene
 			this.load.audio(key, url);
 		});
 
+		Object.entries(resources.jsons).forEach(e =>
+		{
+			const key = e[0];
+			const url = e[1];
+			this.load.json(key, url);
+		});
+
 		this.load.bitmapFont('nokia16', 'assets/fonts/bitmapFonts/nokia16.png', 'assets/fonts/bitmapFonts/nokia16.xml');
 	}
 

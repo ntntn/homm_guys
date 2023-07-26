@@ -1,31 +1,25 @@
 import { Main } from "../Assets";
-import { addAsyncTween } from "../asyncTween";
 import { CustomScene } from "../CustomScene";
+import { Chubrik } from "./Chubrik";
 
 const wrap = (num: number, min: number, max: number): number => ((((num - min) % (max - min)) + (max - min)) % (max - min)) + min;
 (window as any).wrap = wrap;
 
-type Position = { x: number, y: number }
-
-type Chubrik = Phaser.GameObjects.Sprite;
-
 export default class GameScene extends CustomScene
 {
 	static instance: GameScene;
+
+	bloodParticle: Phaser.GameObjects.Particles.ParticleEmitter;
+	
 	cols: number;
 	rows: number;
 	cellSize: number;
 	width: number;
 	height: number;
-
-	currentChubrik: Phaser.GameObjects.Sprite; // ТЕКУЩИЙ ЧУБРИК (ТОТ, ЧЕЙ ХОД)
-	waterChubrik: Phaser.GameObjects.Sprite;
-	fireChubrik: Phaser.GameObjects.Sprite;
-	earthChubrik: any;
-	airChubrik: Phaser.GameObjects.Sprite;
-	dragon: Phaser.GameObjects.Sprite;
-	water_dragon: Phaser.GameObjects.Sprite;
-	bloodParticle: Phaser.GameObjects.Particles.ParticleEmitter;
+	
+	config: ChubrikConfig[];
+	chubriks: Chubrik[];
+	currentChubrik: Chubrik; // ТЕКУЩИЙ ЧУБРИК (ТОТ, ЧЕЙ ХОД)
 
 	constructor()
 	{
@@ -37,16 +31,24 @@ export default class GameScene extends CustomScene
 	create()
 	{
 		(window as any).game = this;
+		
 		this.camera.setBackgroundColor("#212C36"); //цвет фона
+		this.config = this.cache.json.get("Chubriks") as ChubrikConfig[];
 
+		this.createAnims(); //анимации
+		this.createBloodEmitter(); //излучатель частиц крови
 		this.createGrid(); //создать поле
-		this.createFireChubrik();
-		this.createWaterChubrik();
-		this.createEarthChubrik();
-		this.createAirChubrik();
-		this.createDragon();
-		this.createWaterDragon();
-		this.createBloodEmitter();
+
+		const fireChubrik = new Chubrik(this, 0, 0, this.config.find(e => e.type === "fire_chubrik")!);
+		const water = new Chubrik(this, 0, 2, this.config.find(e => e.type === "water_chubrik")!);
+		const earth = new Chubrik(this, 0, 4, this.config.find(e => e.type === "earth_chubrik")!);
+		const air = new Chubrik(this, 0, 6, this.config.find(e => e.type === "air_chubrik")!);
+		const dragon = new Chubrik(this, 0, 8, this.config.find(e => e.type === "dragon")!);
+		const waterDragon = new Chubrik(this, 9, 0, this.config.find(e => e.type === "water_dragon")!);
+
+		this.chubriks = [fireChubrik, water, earth, air, dragon, waterDragon];
+		this.currentChubrik = fireChubrik; //задаем чубрика чей ход
+		this.currentChubrik.drawRange(0, 0); //отрисовываем дальность хода
 
 		this.input.on("pointerdown", this.onClick, this); //отлавливание клика мышки
 		this.initResize(); //неважно
@@ -72,136 +74,6 @@ export default class GameScene extends CustomScene
 				const grass = this.add.image(pos.x, pos.y, Main.Key, frame); //создаем травяную клеточку
 			}
 		}
-	}
-
-	createFireChubrik(col = 0, row = 0)
-	{
-		this.anims.create({
-			key: 'fire_chubrik',
-			frames: this.anims.generateFrameNames(Main.Key, {
-				start: 1,
-				end: 4,
-				prefix: "fire_chubrik (",
-				suffix: ")"
-			}),
-			skipMissedFrames: true,
-			repeat: -1,
-			frameRate: 6
-		});
-
-		const pos = this.getWorldPosition(col, row);
-		this.fireChubrik = this.add.sprite(pos.x, pos.y, Main.Key, Main.chubrik1)
-			.setScale(0.15)
-			.play("fire_chubrik")
-			.setDepth(1);
-
-		this.currentChubrik = this.fireChubrik; //задаем чубрика чей ход
-		this.drawRange(col, row); //отрисовываем дальность хода
-	}
-
-	createWaterChubrik(col = 0, row = 2)
-	{
-		const wp = this.getWorldPosition(col, row);
-		this.waterChubrik = this.add.sprite(wp.x, wp.y, Main.Key, Main["water_chubrik (1)"]).setScale(0.2).setDepth(1);
-
-		this.anims.create({
-			key: 'water_chubrik',
-			frames: this.anims.generateFrameNames(Main.Key, {
-				start: 1,
-				end: 4,
-				prefix: "water_chubrik (",
-				suffix: ")"
-			}),
-			skipMissedFrames: true,
-			repeat: -1,
-			frameRate: 6
-		});
-
-		this.waterChubrik.play("water_chubrik");
-	}
-
-	createEarthChubrik(col = 0, row = 4)
-	{
-		const wp = this.getWorldPosition(col, row);
-		this.earthChubrik = this.add.sprite(wp.x, wp.y, Main.Key, Main["earth_chubrik (1)"]).setScale(0.2).setDepth(1);
-
-		this.anims.create({
-			key: 'earth_chubrik',
-			frames: this.anims.generateFrameNames(Main.Key, {
-				start: 1,
-				end: 4,
-				prefix: "earth_chubrik (",
-				suffix: ")"
-			}),
-			skipMissedFrames: true,
-			repeat: -1,
-			frameRate: 6
-		});
-
-		this.earthChubrik.play("earth_chubrik");
-	}
-
-	createAirChubrik(col = 0, row = 6)
-	{
-		const wp = this.getWorldPosition(col, row);
-		this.airChubrik = this.add.sprite(wp.x, wp.y, Main.Key, Main["air_chubrik (1)"]).setScale(0.2).setDepth(1);
-
-		this.anims.create({
-			key: 'air_chubrik',
-			frames: this.anims.generateFrameNames(Main.Key, {
-				start: 1,
-				end: 4,
-				prefix: "air_chubrik (",
-				suffix: ")"
-			}),
-			skipMissedFrames: true,
-			repeat: -1,
-			frameRate: 6
-		});
-
-		this.airChubrik.play("air_chubrik");
-	}
-
-	createDragon(col = 0, row = 8)
-	{
-		const wp = this.getWorldPosition(col, row);
-		this.dragon = this.add.sprite(wp.x, wp.y, Main.Key, Main["dragon (1)"]).setScale(0.2).setDepth(1);
-
-		this.anims.create({
-			key: 'dragon',
-			frames: this.anims.generateFrameNames(Main.Key, {
-				start: 1,
-				end: 4,
-				prefix: "dragon (",
-				suffix: ")"
-			}),
-			skipMissedFrames: true,
-			repeat: -1,
-			frameRate: 6
-		});
-
-		this.dragon.play("dragon");
-	}
-
-	createWaterDragon(col = 0, row = 9)
-	{
-		const wp = this.getWorldPosition(col, row);
-		this.water_dragon = this.add.sprite(wp.x, wp.y, Main.Key, Main["water_dragon (1)"]).setScale(0.2).setDepth(1);
-
-		this.anims.create({
-			key: 'water_dragon',
-			frames: this.anims.generateFrameNames(Main.Key, {
-				start: 1,
-				end: 4,
-				prefix: "water_dragon (",
-				suffix: ")"
-			}),
-			skipMissedFrames: true,
-			repeat: -1,
-			frameRate: 6
-		});
-
-		this.water_dragon.play("water_dragon");
 	}
 
 	createBloodEmitter()
@@ -250,8 +122,9 @@ export default class GameScene extends CustomScene
 			{
 				const pos = this.getWorldPosition(logicPos.col - 1, logicPos.row);
 				if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col - 1, logicPos.row)) return;
-				await this.move(pos);
-				await this.attack(this.currentChubrik, existingChubrik);
+				if (this.getChubrik(logicPos.col - 1, logicPos.row)) return;
+				await this.currentChubrik.moveAction(pos);
+				await this.currentChubrik.attackAction(this.currentChubrik, existingChubrik);
 				this.onMoveEnd();
 			}
 			return;
@@ -259,7 +132,7 @@ export default class GameScene extends CustomScene
 
 		if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col, logicPos.row)) return;
 
-		this.move(pos);
+		this.currentChubrik.moveAction(pos);
 		this.onMoveEnd();
 	}
 
@@ -268,17 +141,6 @@ export default class GameScene extends CustomScene
 		const colDist = fromCol - col;
 		const rowDist = fromRow - row;
 		return colDist * colDist + rowDist * rowDist < range * range
-	}
-
-	async move(pos: Position)
-	{
-		this.clearRange();
-		await addAsyncTween(this, {
-			targets: this.currentChubrik,
-			x: pos.x,
-			y: pos.y,
-			duration: 500,
-		});
 	}
 
 	onMoveEnd()
@@ -290,70 +152,7 @@ export default class GameScene extends CustomScene
 
 		this.currentChubrik = chubriks[nextIndex]; //изменяем текущего чубрика на следующего
 		const logicPos = this.getLogicPosition(this.currentChubrik.x, this.currentChubrik.y);
-		this.drawRange(logicPos.col, logicPos.row); //отрисовываем дальность хода
-	}
-
-	async attack(chubrik1: Chubrik, chubrik2: Chubrik)
-	{
-		await addAsyncTween(this, {
-			targets: chubrik1,
-			x: chubrik2.x - chubrik2.displayWidth * .4,
-			y: chubrik2.y,
-			delay: 150,
-			duration: 150,
-			ease: "Ease.Sine.InOut",
-			yoyo: true,
-			onYoyo: () =>
-			{
-				chubrik2.setTintFill(0xffffff);
-				this.time.delayedCall(100, () => chubrik2.clearTint());
-
-				const text = this.add.text(chubrik2.x, chubrik2.y, "-15").setOrigin(0.5).setAlign("center").setDepth(10);
-				this.add.tween({
-					targets: text,
-					y: `-=${this.cellSize}`,
-					alpha: 0,
-				});
-
-				this.bloodParticle.explode(10, chubrik2.x, chubrik2.y);
-			}
-		});
-	}
-
-	get chubriks()
-	{
-		return [this.fireChubrik, this.waterChubrik, this.earthChubrik, this.airChubrik, this.dragon, this.water_dragon].filter(e => e);
-	}
-
-	range: Phaser.GameObjects.Rectangle[] = [];
-	clearRange()
-	{
-		this.range.forEach(r => r.destroy());
-	}
-
-	drawRange(col: number, row: number, range = 4)
-	{
-		const pos = this.getWorldPosition(col, row);
-		this.range.push(this.add.rectangle(pos.x, pos.y, this.cellSize, this.cellSize, 0xAEDAAA, 0.75));
-
-		for (let r = row - range; r <= row + range; r++)
-		{
-			for (let c = col - range; c <= col + range; c++)
-			{
-				if (!this.isValid(c, r)) continue;
-
-				const dist = (c - col) * (c - col) + (r - row) * (r - row);
-				if (dist < range * range)
-				{
-					if (this.getChubrik(c, r)) continue;
-					// point is in circle
-					const pos = this.getWorldPosition(c, r);
-					const rect = this.add.rectangle(pos.x, pos.y, this.cellSize, this.cellSize, 0xACC5DA, 0.25);
-					this.range.push(rect);
-				}
-
-			}
-		}
+		this.currentChubrik.drawRange(logicPos.col, logicPos.row); //отрисовываем дальность хода
 	}
 
 	isInRange(col: number, row: number, range = 4)
@@ -393,5 +192,87 @@ export default class GameScene extends CustomScene
 	onResize(): void
 	{
 		this.camera.centerOn(0, 0);
+	}
+
+	
+	createAnims()
+	{
+		this.anims.create({
+			key: 'fire_chubrik',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "fire_chubrik (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 6
+		});
+
+		this.anims.create({
+			key: 'water_chubrik',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "water_chubrik (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 6
+		});
+
+		this.anims.create({
+			key: 'earth_chubrik',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "earth_chubrik (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 6
+		});
+
+		this.anims.create({
+			key: 'air_chubrik',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "air_chubrik (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 6
+		});
+
+		this.anims.create({
+			key: 'dragon',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "dragon (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 6
+		});
+
+		this.anims.create({
+			key: 'water_dragon',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "water_dragon (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 6
+		});
 	}
 }

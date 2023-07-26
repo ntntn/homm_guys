@@ -1,0 +1,83 @@
+export const ChubriksConfig = [
+    {
+        "type": "fire_chubrik",
+        "life": 10,
+        "attack": 3,
+        "speed": 5,
+        "range": 5,
+        "defense": 2,
+        "price": 6
+    },
+    {
+        "type": "water_chubrik",
+        "life": 12,
+        "attack": 3,
+        "speed": 5,
+        "range": 1,
+        "defense": 2,
+        "price": 6
+    },
+    {
+        "type": "dragon",
+        "life": 180,
+        "attack": 35,
+        "speed": 10,
+        "range": 1,
+        "defense": 10,
+        "price": 110
+    },
+    {
+        "type": "air_chubrik",
+        "life": 25,
+        "attack": 6,
+        "speed": 4,
+        "range": 8,
+        "defense": 3,
+        "price": 15
+    },
+    {
+        "type": "chertik",
+        "life": 6,
+        "attack": 2,
+        "speed": 4,
+        "range": 1,
+        "defense": 0,
+        "price": 3
+    },
+    {
+        "type": "skeleton",
+        "life": 5,
+        "attack": 1,
+        "speed": 5,
+        "range": 1,
+        "defense": 1,
+        "price": 3
+    },
+    {
+        "type": "water_dragon",
+        "life": 150,
+        "attack": 40,
+        "speed": 8,
+        "range": 1,
+        "defense": 8,
+        "price": 100
+    },
+    {
+        "type": "air_bird",
+        "life": 17,
+        "attack": 4,
+        "speed": 6,
+        "range": 1,
+        "defense": 3,
+        "price": 10
+    },
+    {
+        "type": "earth_chubrik",
+        "life": 90,
+        "attack": 15,
+        "speed": 4,
+        "range": 1,
+        "defense": 7,
+        "price": 60
+    }
+]
