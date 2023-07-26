@@ -10,13 +10,13 @@ export default class GameScene extends CustomScene
 	static instance: GameScene;
 
 	bloodParticle: Phaser.GameObjects.Particles.ParticleEmitter;
-	
+
 	cols: number;
 	rows: number;
 	cellSize: number;
 	width: number;
 	height: number;
-	
+
 	config: ChubrikConfig[];
 	chubriks: Chubrik[];
 	currentChubrik: Chubrik; // ТЕКУЩИЙ ЧУБРИК (ТОТ, ЧЕЙ ХОД)
@@ -31,7 +31,7 @@ export default class GameScene extends CustomScene
 	create()
 	{
 		(window as any).game = this;
-		
+
 		this.camera.setBackgroundColor("#212C36"); //цвет фона
 		this.config = this.cache.json.get("Chubriks") as ChubrikConfig[];
 
@@ -108,32 +108,27 @@ export default class GameScene extends CustomScene
 		const curLogicPos = this.getLogicPosition(this.currentChubrik.x, this.currentChubrik.y);
 		const logicPos = this.getLogicPosition(x, y);
 		const pos = this.getWorldPosition(logicPos.col, logicPos.row);
-
+		
 		if (!this.isValid(logicPos.col, logicPos.row)) return;
 		console.log("onclick: ", x, y, logicPos)
-
+		
 		const existingChubrik = this.getChubrik(logicPos.col, logicPos.row);
 		if (existingChubrik === this.currentChubrik) return;
-
+		
 		if (existingChubrik)
 		{
-			const leftCellExists = this.isValid(logicPos.col - 1, logicPos.row);
-			if (leftCellExists)
-			{
-				const pos = this.getWorldPosition(logicPos.col - 1, logicPos.row);
-				if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col - 1, logicPos.row)) return;
-				if (this.getChubrik(logicPos.col - 1, logicPos.row)) return;
-				await this.currentChubrik.moveAction(pos);
-				await this.currentChubrik.attackAction(this.currentChubrik, existingChubrik);
-				this.onMoveEnd();
-			}
+			this.input.enabled = false;
+			await this.currentChubrik.attackAction(existingChubrik);
+			this.input.enabled = true;
 			return;
 		}
-
+		
 		if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col, logicPos.row)) return;
-
-		this.currentChubrik.moveAction(pos);
+		
+		this.input.enabled = false;
+		await this.currentChubrik.moveAction(pos);
 		this.onMoveEnd();
+		this.input.enabled = true;
 	}
 
 	isRangeValid(fromCol: number, fromRow: number, col: number, row: number, range = 4)
@@ -145,6 +140,7 @@ export default class GameScene extends CustomScene
 
 	onMoveEnd()
 	{
+		//Смена текущего чубрика
 		const chubriks = this.chubriks; //все чубрики
 		const index = chubriks.indexOf(this.currentChubrik); //индекс текущего чубрика
 		const nextIndex = wrap(index + 1, 0, chubriks.length); //инндекс следующего чубрика
@@ -194,7 +190,7 @@ export default class GameScene extends CustomScene
 		this.camera.centerOn(0, 0);
 	}
 
-	
+
 	createAnims()
 	{
 		this.anims.create({
@@ -207,7 +203,7 @@ export default class GameScene extends CustomScene
 			}),
 			skipMissedFrames: true,
 			repeat: -1,
-			frameRate: 6
+			frameRate: 12
 		});
 
 		this.anims.create({
@@ -220,7 +216,7 @@ export default class GameScene extends CustomScene
 			}),
 			skipMissedFrames: true,
 			repeat: -1,
-			frameRate: 6
+			frameRate: 12
 		});
 
 		this.anims.create({
@@ -233,7 +229,7 @@ export default class GameScene extends CustomScene
 			}),
 			skipMissedFrames: true,
 			repeat: -1,
-			frameRate: 6
+			frameRate: 12
 		});
 
 		this.anims.create({
@@ -246,7 +242,7 @@ export default class GameScene extends CustomScene
 			}),
 			skipMissedFrames: true,
 			repeat: -1,
-			frameRate: 6
+			frameRate: 12
 		});
 
 		this.anims.create({
@@ -259,7 +255,7 @@ export default class GameScene extends CustomScene
 			}),
 			skipMissedFrames: true,
 			repeat: -1,
-			frameRate: 6
+			frameRate: 12
 		});
 
 		this.anims.create({
@@ -272,7 +268,20 @@ export default class GameScene extends CustomScene
 			}),
 			skipMissedFrames: true,
 			repeat: -1,
-			frameRate: 6
+			frameRate: 12
+		});
+
+		this.anims.create({
+			key: 'air_chubrik_patron',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 5,
+				prefix: "air_chubrik_patron (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 12
 		});
 	}
 }
