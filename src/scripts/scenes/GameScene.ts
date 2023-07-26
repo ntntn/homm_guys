@@ -40,37 +40,15 @@ export default class GameScene extends CustomScene
 		this.camera.setBackgroundColor("#212C36"); //цвет фона
 
 		this.createGrid(); //создать поле
-		this.createFireChubrik(); //создать огненного чубрика
-		this.createWaterChubrik(); //создать водяного чубрика
-		this.createEarthChubrik(); //создать земляного чубрика
-		this.createAirChubrik(); //создать воздушного чубрика
-		this.createDragon(); //создать дракона
+		this.createFireChubrik();
+		this.createWaterChubrik();
+		this.createEarthChubrik();
+		this.createAirChubrik();
+		this.createDragon();
 		this.createWaterDragon();
-
-		this.bloodParticle = this.add.particles(0, 0, Main.Key, {
-			frame: Main.blood,
-			speedX: {
-				random: [16, 48]
-			},
-			speedY: {
-				random: [8, 48]
-			},
-			lifespan: {
-				random: [500, 1000]
-			},
-			scale: 0.2,
-			alpha: {
-				start: 1.0,
-				end: 0.0
-			},
-			tint: 0xFDD3F1,
-			quantity: 2,
-			frequency: 100,
-			// blendMode: "ADD"
-		}).stop().setDepth(12);
+		this.createBloodEmitter();
 
 		this.input.on("pointerdown", this.onClick, this); //отлавливание клика мышки
-
 		this.initResize(); //неважно
 	}
 
@@ -226,10 +204,36 @@ export default class GameScene extends CustomScene
 		this.water_dragon.play("water_dragon");
 	}
 
+	createBloodEmitter()
+	{
+		this.bloodParticle = this.add.particles(0, 0, Main.Key, {
+			frame: Main.blood,
+			speedX: {
+				random: [16, 48]
+			},
+			speedY: {
+				random: [8, 48]
+			},
+			lifespan: {
+				random: [500, 1000]
+			},
+			scale: 0.2,
+			alpha: {
+				start: 1.0,
+				end: 0.0
+			},
+			tint: 0xFDD3F1,
+			quantity: 2,
+			frequency: 100,
+			// blendMode: "ADD"
+		}).stop().setDepth(12);
+	}
+
 	async onClick(ptr: Phaser.Input.Pointer)
 	{
 		const x = ptr.worldX;
 		const y = ptr.worldY;
+		const curLogicPos = this.getLogicPosition(this.currentChubrik.x, this.currentChubrik.y);
 		const logicPos = this.getLogicPosition(x, y);
 		const pos = this.getWorldPosition(logicPos.col, logicPos.row);
 
@@ -245,6 +249,7 @@ export default class GameScene extends CustomScene
 			if (leftCellExists)
 			{
 				const pos = this.getWorldPosition(logicPos.col - 1, logicPos.row);
+				if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col - 1, logicPos.row)) return;
 				await this.move(pos);
 				await this.attack(this.currentChubrik, existingChubrik);
 				this.onMoveEnd();
@@ -252,13 +257,22 @@ export default class GameScene extends CustomScene
 			return;
 		}
 
-		this.clearRange();
+		if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col, logicPos.row)) return;
+
 		this.move(pos);
 		this.onMoveEnd();
 	}
 
+	isRangeValid(fromCol: number, fromRow: number, col: number, row: number, range = 4)
+	{
+		const colDist = fromCol - col;
+		const rowDist = fromRow - row;
+		return colDist * colDist + rowDist * rowDist < range * range
+	}
+
 	async move(pos: Position)
 	{
+		this.clearRange();
 		await addAsyncTween(this, {
 			targets: this.currentChubrik,
 			x: pos.x,
@@ -316,6 +330,7 @@ export default class GameScene extends CustomScene
 	{
 		this.range.forEach(r => r.destroy());
 	}
+
 	drawRange(col: number, row: number, range = 4)
 	{
 		const pos = this.getWorldPosition(col, row);
@@ -327,7 +342,8 @@ export default class GameScene extends CustomScene
 			{
 				if (!this.isValid(c, r)) continue;
 
-				if ((c - col) * (c - col) + (r - row) * (r - row) < range * range)
+				const dist = (c - col) * (c - col) + (r - row) * (r - row);
+				if (dist < range * range)
 				{
 					if (this.getChubrik(c, r)) continue;
 					// point is in circle
@@ -338,6 +354,11 @@ export default class GameScene extends CustomScene
 
 			}
 		}
+	}
+
+	isInRange(col: number, row: number, range = 4)
+	{
+		return col * col + row * row < range * range
 	}
 
 	getChubrik(col: number, row: number)
