@@ -1,8 +1,13 @@
 import { Main } from "../Assets";
+import { addAsyncTween } from "../asyncTween";
 import { CustomScene } from "../CustomScene";
 
 const wrap = (num: number, min: number, max: number): number => ((((num - min) % (max - min)) + (max - min)) % (max - min)) + min;
 (window as any).wrap = wrap;
+
+type Position = { x: number, y: number }
+
+type Chubrik = Phaser.GameObjects.Sprite;
 
 export default class GameScene extends CustomScene
 {
@@ -19,6 +24,8 @@ export default class GameScene extends CustomScene
 	earthChubrik: any;
 	airChubrik: Phaser.GameObjects.Sprite;
 	dragon: Phaser.GameObjects.Sprite;
+	water_dragon: Phaser.GameObjects.Sprite;
+	bloodParticle: Phaser.GameObjects.Particles.ParticleEmitter;
 
 	constructor()
 	{
@@ -29,6 +36,7 @@ export default class GameScene extends CustomScene
 
 	create()
 	{
+		(window as any).game = this;
 		this.camera.setBackgroundColor("#212C36"); //цвет фона
 
 		this.createGrid(); //создать поле
@@ -37,6 +45,29 @@ export default class GameScene extends CustomScene
 		this.createEarthChubrik(); //создать земляного чубрика
 		this.createAirChubrik(); //создать воздушного чубрика
 		this.createDragon(); //создать дракона
+		this.createWaterDragon();
+
+		this.bloodParticle = this.add.particles(0, 0, Main.Key, {
+			frame: Main.blood,
+			speedX: {
+				random: [16, 48]
+			},
+			speedY: {
+				random: [8, 48]
+			},
+			lifespan: {
+				random: [500, 1000]
+			},
+			scale: 0.2,
+			alpha: {
+				start: 1.0,
+				end: 0.0
+			},
+			tint: 0xFDD3F1,
+			quantity: 2,
+			frequency: 100,
+			// blendMode: "ADD"
+		}).stop().setDepth(12);
 
 		this.input.on("pointerdown", this.onClick, this); //отлавливание клика мышки
 
@@ -174,7 +205,28 @@ export default class GameScene extends CustomScene
 		this.dragon.play("dragon");
 	}
 
-	onClick(ptr: Phaser.Input.Pointer)
+	createWaterDragon(col = 0, row = 9)
+	{
+		const wp = this.getWorldPosition(col, row);
+		this.water_dragon = this.add.sprite(wp.x, wp.y, Main.Key, Main["water_dragon (1)"]).setScale(0.2).setDepth(1);
+
+		this.anims.create({
+			key: 'water_dragon',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "water_dragon (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 6
+		});
+
+		this.water_dragon.play("water_dragon");
+	}
+
+	async onClick(ptr: Phaser.Input.Pointer)
 	{
 		const x = ptr.worldX;
 		const y = ptr.worldY;
@@ -184,29 +236,79 @@ export default class GameScene extends CustomScene
 		if (!this.isValid(logicPos.col, logicPos.row)) return;
 		console.log("onclick: ", x, y, logicPos)
 
+		const existingChubrik = this.getChubrik(logicPos.col, logicPos.row);
+		if (existingChubrik === this.currentChubrik) return;
+
+		if (existingChubrik)
+		{
+			const leftCellExists = this.isValid(logicPos.col - 1, logicPos.row);
+			if (leftCellExists)
+			{
+				const pos = this.getWorldPosition(logicPos.col - 1, logicPos.row);
+				await this.move(pos);
+				await this.attack(this.currentChubrik, existingChubrik);
+				this.onMoveEnd();
+			}
+			return;
+		}
+
 		this.clearRange();
-		this.tweens.add({
+		this.move(pos);
+		this.onMoveEnd();
+	}
+
+	async move(pos: Position)
+	{
+		await addAsyncTween(this, {
 			targets: this.currentChubrik,
 			x: pos.x,
 			y: pos.y,
 			duration: 500,
-			onComplete: () =>
-			{
-				const chubriks = this.chubriks; //все чубрики
-				const index = chubriks.indexOf(this.currentChubrik); //индекс текущего чубрика
-				const nextIndex = wrap(index + 1, 0, chubriks.length); //инндекс следующего чубрика
-				console.log(index, nextIndex);
+		});
+	}
 
-				this.currentChubrik = chubriks[nextIndex]; //изменяем текущего чубрика на следующего
-				const logicPos = this.getLogicPosition(this.currentChubrik.x, this.currentChubrik.y);
-				this.drawRange(logicPos.col, logicPos.row); //отрисовываем дальность хода
+	onMoveEnd()
+	{
+		const chubriks = this.chubriks; //все чубрики
+		const index = chubriks.indexOf(this.currentChubrik); //индекс текущего чубрика
+		const nextIndex = wrap(index + 1, 0, chubriks.length); //инндекс следующего чубрика
+		console.log(index, nextIndex);
+
+		this.currentChubrik = chubriks[nextIndex]; //изменяем текущего чубрика на следующего
+		const logicPos = this.getLogicPosition(this.currentChubrik.x, this.currentChubrik.y);
+		this.drawRange(logicPos.col, logicPos.row); //отрисовываем дальность хода
+	}
+
+	async attack(chubrik1: Chubrik, chubrik2: Chubrik)
+	{
+		await addAsyncTween(this, {
+			targets: chubrik1,
+			x: chubrik2.x - chubrik2.displayWidth * .4,
+			y: chubrik2.y,
+			delay: 150,
+			duration: 150,
+			ease: "Ease.Sine.InOut",
+			yoyo: true,
+			onYoyo: () =>
+			{
+				chubrik2.setTintFill(0xffffff);
+				this.time.delayedCall(100, () => chubrik2.clearTint());
+
+				const text = this.add.text(chubrik2.x, chubrik2.y, "-15").setOrigin(0.5).setAlign("center").setDepth(10);
+				this.add.tween({
+					targets: text,
+					y: `-=${this.cellSize}`,
+					alpha: 0,
+				});
+
+				this.bloodParticle.explode(10, chubrik2.x, chubrik2.y);
 			}
 		});
 	}
 
 	get chubriks()
 	{
-		return [this.fireChubrik, this.waterChubrik, this.earthChubrik, this.airChubrik, this.dragon].filter(e => e);
+		return [this.fireChubrik, this.waterChubrik, this.earthChubrik, this.airChubrik, this.dragon, this.water_dragon].filter(e => e);
 	}
 
 	range: Phaser.GameObjects.Rectangle[] = [];
