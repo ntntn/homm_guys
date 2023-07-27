@@ -19,6 +19,7 @@ export class Chubrik
     amountText: Phaser.GameObjects.BitmapText;
     get x() { return this.sprite.x }
     get y() { return this.sprite.y }
+    get type() { return this.config.type }
 
     constructor(scene: GameScene, col: number, row: number, config: ChubrikConfig)
     {
@@ -156,7 +157,7 @@ export class Chubrik
             {
                 await this.scene.waitFor(150 + 150);
                 await this.projectile(chubrik2.x, chubrik2.y);
-                const damage = Phaser.Math.Clamp(this.attack - chubrik2.defense, 0, Number.MAX_VALUE);
+                const damage = Phaser.Math.Clamp(this.attack * this.amount - chubrik2.defense * chubrik2.amount, 0, Number.MAX_VALUE);
                 await chubrik2.takeDamage(damage);
             })()
         ]);
@@ -164,7 +165,8 @@ export class Chubrik
 
     async projectile(x: number, y: number)
     {
-        const projectile = this.scene.add.sprite(this.x, this.y, Main.Key, Main["air_chubrik_patron (1)"]).play("air_chubrik_patron").setScale(0.25).setDepth(2);
+        const anim = this.config.type === "fire_chubrik" ? "fire_chubrik_patron" : "air_chubrik_patron";
+        const projectile = this.scene.add.sprite(this.x, this.y, Main.Key, Main["air_chubrik_patron (1)"]).play(anim).setScale(0.25).setDepth(2);
         await addAsyncTween(this.scene, {
             targets: projectile,
             x: x,
@@ -180,29 +182,43 @@ export class Chubrik
         this.scene.time.delayedCall(100, () => this.sprite.clearTint());
         this.scene.bloodParticle.explode(10, this.x, this.y);
 
-        const text = this.scene.add.bitmapText(this.x, this.y, "nokia16", `-${damage}`).setOrigin(0.5).setCenterAlign().setDepth(20);
+        const prevAmount = this.amount;
+
+        while (damage > 0)
+        {
+            this.life -= damage;
+
+            if (this.life <= 0)
+            {
+                damage = Math.abs(this.life);
+                this.life = this.config.life;
+                this.amount--;
+                if (this.amount <= 0) break;
+            }
+        };
+
+        const text = this.scene.add.bitmapText(this.x, this.y, "nokia16", `-${prevAmount - this.amount}`).setOrigin(0.5).setCenterAlign().setDepth(20);
         this.scene.add.tween({
             targets: text,
             y: `-=${this.scene.cellSize}`,
             alpha: 0,
         });
+        this.updateAmountText();
 
-        this.life -= damage;
-        if (this.life <= 0)
+        if (this.amount <= 0)
         {
-            this.amount--;
-            this.updateAmountText();
-            this.life = this.config.life;
-            if (this.amount <= 0) await this.die();
-            else await addAsyncTween(this.scene, {
+            await this.die();
+        }
+        else
+        {
+            await addAsyncTween(this.scene, {
                 targets: [this.sprite, this.amountText],
                 scale: `*=1.25`,
                 ease: "Sine.Ease.In",
                 yoyo: true,
                 duration: 150,
             });
-        };
-
+        }
     }
 
     async die()
@@ -220,6 +236,8 @@ export class Chubrik
         this.scene.chubriks.splice(index, 1);
         this.sprite.destroy();
         this.amountText.destroy();
+
+        const body = this.scene.add.image(this.x, this.y, Main.Key, this.getBodyFrame(this.config.type));
     }
 
     rangeArray: Phaser.GameObjects.Rectangle[] = [];
@@ -263,6 +281,11 @@ export class Chubrik
         if (type === "air_chubrik") return Main["air_chubrik (1)"];
         if (type === "dragon") return Main["dragon (1)"];
         if (type === "water_dragon") return Main["water_dragon (1)"];
+        if (type === "earth_bender") return Main["earth_bender (1)"];
+        if (type === "air_bird") return Main["bird (1)"];
+        if (type === "skeleton") return Main["skeleton (1)"];
+        if (type === "chertik") return Main["chertik (1)"];
+        if (type === "air_mage") return Main["air_mage (1)"];
         return Main.blood
     }
 
@@ -274,7 +297,11 @@ export class Chubrik
         if (type === "air_chubrik") return 0.2;
         if (type === "dragon") return 0.2;
         if (type === "water_dragon") return 0.2;
-        return 1
+        if (type === "skeleton") return 0.2;
+        if (type === "chertik") return 0.2;
+        if (type === "air_bird") return 0.2;
+        if (type === "earth_bender") return 0.2;
+        return 1;
     }
 
     getAnim(type: ChubrikType)
@@ -285,6 +312,18 @@ export class Chubrik
         if (type === "air_chubrik") return "air_chubrik";
         if (type === "dragon") return "dragon";
         if (type === "water_dragon") return "water_dragon";
+        if (type === "earth_bender") return "earth_bender";
+        if (type === "air_bird") return "air_bird";
+        if (type === "skeleton") return "skeleton";
+        if (type === "chertik") return "chertik";
+        if (type === "air_mage") return "air_mage";
         return Main.blood
+    }
+
+    getBodyFrame(type: ChubrikType)
+    {
+        if (type === "earth_chubrik") return Main.earth_chubrik_body;
+        if (type === "water_chubrik") return Main.water_chubrik_body;
+        return Main.earth_chubrik_body
     }
 }

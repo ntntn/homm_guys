@@ -79,5 +79,23 @@
         "range": 1,
         "defense": 7,
         "price": 60
+    },
+    {
+        "type": "earth_bender",
+        "life": 90,
+        "attack": 15,
+        "speed": 4,
+        "range": 1,
+        "defense": 7,
+        "price": 60
+    },
+    {
+        "type": "air_mage",
+        "life": 90,
+        "attack": 15,
+        "speed": 4,
+        "range": 1,
+        "defense": 7,
+        "price": 60
     }
 ]

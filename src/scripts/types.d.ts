@@ -17,6 +17,8 @@ type ChubrikType =
     "skeleton" |
     "water_dragon" |
     "air_bird" |
-    "earth_chubrik";
+    "earth_chubrik" |
+    "earth_bender" |
+    "air_mage";
 
 type Position = { x: number, y: number }

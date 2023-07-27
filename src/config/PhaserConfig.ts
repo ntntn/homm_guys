@@ -6,9 +6,9 @@ type scaleMode = 'FIT' | 'SMOOTH'
 document.body.style.overflow = 'hidden'
 
 export const GAME_CONFIG = {
-    DEFAULT_WIDTH: 640,
+    DEFAULT_WIDTH: 720,
     DEFAULT_HEIGHT: 360,
-    MAX_WIDTH: 641,
+    MAX_WIDTH: 1000,
     MAX_HEIGHT: 361,
     SCALE_MODE:'SMOOTh' // FIT OR SMOOTH
 }

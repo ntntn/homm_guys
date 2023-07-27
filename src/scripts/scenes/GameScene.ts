@@ -1,4 +1,5 @@
 import { Main } from "../Assets";
+import { addAsyncTween } from "../asyncTween";
 import { CustomScene } from "../CustomScene";
 import { Chubrik } from "./Chubrik";
 
@@ -20,6 +21,7 @@ export default class GameScene extends CustomScene
 	config: ChubrikConfig[];
 	chubriks: Chubrik[];
 	currentChubrik: Chubrik; // ТЕКУЩИЙ ЧУБРИК (ТОТ, ЧЕЙ ХОД)
+	hero1: Phaser.GameObjects.Image;
 
 	constructor()
 	{
@@ -45,11 +47,20 @@ export default class GameScene extends CustomScene
 			new Chubrik(this, 0, 4, this.config.find(e => e.type === "earth_chubrik")!),
 			new Chubrik(this, 0, 6, this.config.find(e => e.type === "air_chubrik")!),
 			new Chubrik(this, 0, 8, this.config.find(e => e.type === "dragon")!),
-			new Chubrik(this, 9, 0, this.config.find(e => e.type === "water_dragon")!)
+			new Chubrik(this, 15, 0, this.config.find(e => e.type === "water_dragon")!),
+			new Chubrik(this, 15, 2, this.config.find(e => e.type === "earth_bender")!),
+			new Chubrik(this, 15, 4, this.config.find(e => e.type === "air_bird")!),
+			new Chubrik(this, 15, 6, this.config.find(e => e.type === "chertik")!),
+			new Chubrik(this, 15, 8, this.config.find(e => e.type === "skeleton")!),
+			new Chubrik(this, 15, 9, this.config.find(e => e.type === "air_mage")!),
 		];
 
 		this.currentChubrik = this.chubriks[0]; //задаем чубрика чей ход
 		this.currentChubrik.drawRange(); //отрисовываем дальность хода
+
+		const hero = this.add.image(-this.gameWidth * .5 + 50, -100, Main.Key, Main.air_hero).setScale(0.35)
+		this.hero1 = this.add.image(this.gameWidth * .5 - 50, -100, Main.Key, Main.air_hero).setScale(0.35).setFlipX(true).setTint(0xEB4732);
+		const spellBok = this.add.image(-this.gameWidth * .5 + 25, 150, Main.Key, Main.spellbook);
 
 		this.input.on("pointerdown", this.onClick, this); //отлавливание клика мышки
 		this.initResize(); //неважно
@@ -73,7 +84,7 @@ export default class GameScene extends CustomScene
 				rect.isStroked = true; //неважно
 				const frame = Phaser.Math.RND.pick([Main.grass1, Main.grass2, Main.grass3, Main.grass4]); //выбираем случайную картинку
 				const grass = this.add.image(pos.x, pos.y, Main.Key, frame); //создаем травяную клеточку
-				if (Phaser.Math.Between(0, 100) < 3) this.add.image(pos.x, pos.y, Main.Key, Main.stone).setScale(0.15);
+				if (Phaser.Math.Between(0, 100) < 3) this.add.image(pos.x, pos.y, Main.Key, Phaser.Math.RND.pick([Main.luzha, Main.stone])).setDepth(1);
 			}
 		}
 	}
@@ -119,10 +130,32 @@ export default class GameScene extends CustomScene
 
 		if (existingChubrik)
 		{
-			this.input.enabled = false;
-			await this.currentChubrik.attackAction(existingChubrik);
-			this.input.enabled = true;
+			//cast spell
+			const blackRect = this.add.rectangle(0, 0, this.gameWidth, this.gameHeight, 0x000000, 1).setAlpha(0).setDepth(30);
+			await addAsyncTween(this, {
+				targets: blackRect,
+				alpha: 0.3,
+				duration: 200
+			});
+
+			const lightning = this.add.sprite(existingChubrik.x, existingChubrik.y, Main.Key, Main["lightning (1)"]).play("lightning").setScale(0.5).setDepth(30);
+			await this.waitFor(500);
+			existingChubrik.takeDamage(10);
+
+			await addAsyncTween(this, {
+				targets: blackRect,
+				alpha: 0,
+				duration: 200
+			});
+
+			lightning.destroy();
+			blackRect.destroy();
 			return;
+
+			// this.input.enabled = false;
+			// await this.currentChubrik.attackAction(existingChubrik);
+			// this.input.enabled = true;
+			// return;
 		}
 
 		if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col, logicPos.row)) return;
@@ -272,6 +305,71 @@ export default class GameScene extends CustomScene
 		});
 
 		this.anims.create({
+			key: 'earth_bender',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "earth_bender (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 12
+		});
+
+		this.anims.create({
+			key: 'bird',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "bird (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 12
+		});
+
+		this.anims.create({
+			key: 'skeleton',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "skeleton (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 12
+		});
+
+		this.anims.create({
+			key: 'chertik',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "chertik (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 12
+		});
+
+		this.anims.create({
+			key: 'air_mage',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 4,
+				prefix: "air_mage (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 12
+		});
+
+		this.anims.create({
 			key: 'air_chubrik_patron',
 			frames: this.anims.generateFrameNames(Main.Key, {
 				start: 1,
@@ -281,6 +379,31 @@ export default class GameScene extends CustomScene
 			}),
 			skipMissedFrames: true,
 			repeat: -1,
+			frameRate: 12
+		});
+
+		this.anims.create({
+			key: 'fire_chubrik_patron',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 5,
+				prefix: "fire_chubrik_patron (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
+			repeat: -1,
+			frameRate: 12
+		});
+
+		this.anims.create({
+			key: 'lightning',
+			frames: this.anims.generateFrameNames(Main.Key, {
+				start: 1,
+				end: 10,
+				prefix: "lightning (",
+				suffix: ")"
+			}),
+			skipMissedFrames: true,
 			frameRate: 12
 		});
 	}
