@@ -39,16 +39,17 @@ export default class GameScene extends CustomScene
 		this.createBloodEmitter(); //излучатель частиц крови
 		this.createGrid(); //создать поле
 
-		const fireChubrik = new Chubrik(this, 0, 0, this.config.find(e => e.type === "fire_chubrik")!);
-		const water = new Chubrik(this, 0, 2, this.config.find(e => e.type === "water_chubrik")!);
-		const earth = new Chubrik(this, 0, 4, this.config.find(e => e.type === "earth_chubrik")!);
-		const air = new Chubrik(this, 0, 6, this.config.find(e => e.type === "air_chubrik")!);
-		const dragon = new Chubrik(this, 0, 8, this.config.find(e => e.type === "dragon")!);
-		const waterDragon = new Chubrik(this, 9, 0, this.config.find(e => e.type === "water_dragon")!);
+		this.chubriks = [
+			new Chubrik(this, 0, 0, this.config.find(e => e.type === "fire_chubrik")!),
+			new Chubrik(this, 0, 2, this.config.find(e => e.type === "water_chubrik")!),
+			new Chubrik(this, 0, 4, this.config.find(e => e.type === "earth_chubrik")!),
+			new Chubrik(this, 0, 6, this.config.find(e => e.type === "air_chubrik")!),
+			new Chubrik(this, 0, 8, this.config.find(e => e.type === "dragon")!),
+			new Chubrik(this, 9, 0, this.config.find(e => e.type === "water_dragon")!)
+		];
 
-		this.chubriks = [fireChubrik, water, earth, air, dragon, waterDragon];
-		this.currentChubrik = fireChubrik; //задаем чубрика чей ход
-		this.currentChubrik.drawRange(0, 0); //отрисовываем дальность хода
+		this.currentChubrik = this.chubriks[0]; //задаем чубрика чей ход
+		this.currentChubrik.drawRange(); //отрисовываем дальность хода
 
 		this.input.on("pointerdown", this.onClick, this); //отлавливание клика мышки
 		this.initResize(); //неважно
@@ -72,6 +73,7 @@ export default class GameScene extends CustomScene
 				rect.isStroked = true; //неважно
 				const frame = Phaser.Math.RND.pick([Main.grass1, Main.grass2, Main.grass3, Main.grass4]); //выбираем случайную картинку
 				const grass = this.add.image(pos.x, pos.y, Main.Key, frame); //создаем травяную клеточку
+				if (Phaser.Math.Between(0, 100) < 3) this.add.image(pos.x, pos.y, Main.Key, Main.stone).setScale(0.15);
 			}
 		}
 	}
@@ -108,13 +110,13 @@ export default class GameScene extends CustomScene
 		const curLogicPos = this.getLogicPosition(this.currentChubrik.x, this.currentChubrik.y);
 		const logicPos = this.getLogicPosition(x, y);
 		const pos = this.getWorldPosition(logicPos.col, logicPos.row);
-		
+
 		if (!this.isValid(logicPos.col, logicPos.row)) return;
 		console.log("onclick: ", x, y, logicPos)
-		
+
 		const existingChubrik = this.getChubrik(logicPos.col, logicPos.row);
 		if (existingChubrik === this.currentChubrik) return;
-		
+
 		if (existingChubrik)
 		{
 			this.input.enabled = false;
@@ -122,9 +124,9 @@ export default class GameScene extends CustomScene
 			this.input.enabled = true;
 			return;
 		}
-		
+
 		if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col, logicPos.row)) return;
-		
+
 		this.input.enabled = false;
 		await this.currentChubrik.moveAction(pos);
 		this.onMoveEnd();
@@ -144,11 +146,9 @@ export default class GameScene extends CustomScene
 		const chubriks = this.chubriks; //все чубрики
 		const index = chubriks.indexOf(this.currentChubrik); //индекс текущего чубрика
 		const nextIndex = wrap(index + 1, 0, chubriks.length); //инндекс следующего чубрика
-		console.log(index, nextIndex);
 
 		this.currentChubrik = chubriks[nextIndex]; //изменяем текущего чубрика на следующего
-		const logicPos = this.getLogicPosition(this.currentChubrik.x, this.currentChubrik.y);
-		this.currentChubrik.drawRange(logicPos.col, logicPos.row); //отрисовываем дальность хода
+		this.currentChubrik.drawRange(); //отрисовываем дальность хода
 	}
 
 	isInRange(col: number, row: number, range = 4)

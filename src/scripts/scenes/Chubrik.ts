@@ -15,12 +15,15 @@ export class Chubrik
     amount: number;
 
     sprite: Phaser.GameObjects.Sprite;
+    config: ChubrikConfig;
+    amountText: Phaser.GameObjects.BitmapText;
     get x() { return this.sprite.x }
     get y() { return this.sprite.y }
 
     constructor(scene: GameScene, col: number, row: number, config: ChubrikConfig)
     {
         this.scene = scene;
+        this.config = config;
 
         this.life = config.life;
         this.attack = config.attack;
@@ -32,21 +35,30 @@ export class Chubrik
 
         const wp = scene.getWorldPosition(col, row);
         const frame = this.getFrame(config.type);
-        this.sprite = scene.add.sprite(wp.x, wp.y, Main.Key, this.getFrame(config.type))
+        this.sprite = scene.add.sprite(wp.x, wp.y, Main.Key, frame)
             .setScale(this.getScale(config.type))
             .setDepth(1)
             .play(this.getAnim(config.type));
+
+        this.amountText = scene.add.bitmapText(0, 0, "nokia16").setOrigin(0.5).setCenterAlign().setDepth(15).setFontSize(12);
+        this.updateAmountText();
+    }
+
+    updateAmountText()
+    {
+        this.amountText.setPosition(this.x, this.y + this.sprite.displayHeight * .5).setText(this.amount.toString());
     }
 
     async moveAction(pos: Position)
     {
         this.clearRange();
-
+        this.sprite.setFlipX(pos.x - this.x < 0);
         await addAsyncTween(this.scene, {
-            targets: this.sprite,
+            targets: [this.sprite],
             x: pos.x,
             y: pos.y,
             duration: 500,
+            onUpdate: () => this.updateAmountText(),
         });
     }
 
@@ -56,6 +68,7 @@ export class Chubrik
         if (this.range > 1)
         {
             this.clearRange();
+            this.sprite.setFlipX(chubrik2.x - this.x < 0);
             await this.rangeAttackAction(this, chubrik2);
             this.scene.onMoveEnd();
         }
@@ -63,16 +76,39 @@ export class Chubrik
         {
             const curLogicPos = this.scene.getLogicPosition(this.x, this.y);
             const logicPos = this.scene.getLogicPosition(chubrik2.x, chubrik2.y);
-            const leftCellExists = this.scene.isValid(logicPos.col - 1, logicPos.row);
-
-            if (leftCellExists)
+            const cellPositions = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]].map(e => { return { col: logicPos.col + e[0], row: logicPos.row + e[1] } }).filter(e =>
             {
-                const pos = this.scene.getWorldPosition(logicPos.col - 1, logicPos.row);
-                if (!this.scene.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col - 1, logicPos.row)) return;
-                const existing = this.scene.getChubrik(logicPos.col - 1, logicPos.row);
-                if (existing && existing != this) return;
+                const isRangeValid = this.scene.isRangeValid(curLogicPos.col, curLogicPos.row, e.col, e.row);
+                const existing = this.scene.getChubrik(e.col, e.row);
+                console.log(e, isRangeValid, existing);
+                return this.scene.isValid(e.col, e.row) && (!existing || existing == this) && isRangeValid;
+            });
+
+            console.log(cellPositions);
+
+            const lengthArray = cellPositions.map(pos =>
+            {
+                const wp = this.scene.getWorldPosition(pos.col, pos.row);
+                return new Phaser.Math.Vector2(wp.x - this.x, wp.y - this.y).length()
+            });
+
+            console.log(lengthArray);
+            const closest = Math.min(...lengthArray);
+            const index = lengthArray.indexOf(closest);
+
+            console.log(index);
+
+            const validCell = cellPositions[index];
+            if (validCell)
+            {
+                const pos = this.scene.getWorldPosition(validCell.col, validCell.row);
                 this.clearRange();
-                await this.scene.currentChubrik.moveAction(pos);
+                this.sprite.setFlipX(chubrik2.x - this.x < 0);
+                if (pos.x != this.x || pos.y != this.y)
+                {
+                    await this.scene.currentChubrik.moveAction(pos);
+                    await this.scene.waitFor(100);
+                }
                 await this.meleeAttackAction(this, chubrik2);
                 this.scene.onMoveEnd();
             }
@@ -81,69 +117,117 @@ export class Chubrik
 
     async meleeAttackAction(chubrik1: Chubrik, chubrik2: Chubrik)
     {
-        await addAsyncTween(this.scene, {
-            targets: chubrik1.sprite,
-            x: chubrik2.x - chubrik2.sprite.displayWidth * .4,
-            delay: 150,
-            duration: 150,
-            ease: "Ease.Sine.InOut",
-            yoyo: true,
-            onYoyo: () =>
+        const dist = new Phaser.Math.Vector2(chubrik2.x - chubrik1.x, chubrik2.y - chubrik1.y).normalize();
+        await Promise.all([
+            addAsyncTween(this.scene, {
+                targets: [this.sprite],
+                x: `+=${dist.x * this.scene.cellSize * .5}`,
+                y: `+=${dist.y * this.scene.cellSize * .5}`,
+                delay: 150,
+                duration: 150,
+                ease: "Ease.Sine.InOut",
+                yoyo: true,
+                onUpdate: () => this.updateAmountText(),
+            }),
+            (async () =>
             {
-                chubrik2.sprite.setTintFill(0xffffff);
-                this.scene.time.delayedCall(100, () => chubrik2.sprite.clearTint());
-                this.scene.bloodParticle.explode(10, chubrik2.x, chubrik2.y);
-
-                const damage = this.attack - chubrik2.defense;
-                const text = this.scene.add.bitmapText(chubrik2.x, chubrik2.y, "nokia16", `-${damage}`).setOrigin(0.5).setCenterAlign().setDepth(10);
-                this.scene.add.tween({
-                    targets: text,
-                    y: `-=${this.scene.cellSize}`,
-                    alpha: 0,
-                });
-            }
-        });
+                await this.scene.waitFor(150 + 150);
+                const damage = Phaser.Math.Clamp(this.attack - chubrik2.defense, 0, Number.MAX_VALUE);
+                await chubrik2.takeDamage(damage);
+            })()
+        ]);
     }
 
     async rangeAttackAction(chubrik1: Chubrik, chubrik2: Chubrik)
     {
-        await addAsyncTween(this.scene, {
-            targets: chubrik1.sprite,
-            x: `+=${this.sprite.displayWidth * .5}`,
-            delay: 150,
-            duration: 150,
-            ease: "Ease.Sine.InOut",
-            yoyo: true,
-            onYoyo: async () =>
+        const dist = new Phaser.Math.Vector2(chubrik2.x - chubrik1.x, chubrik2.y - chubrik1.y).normalize();
+        await Promise.all([
+            addAsyncTween(this.scene, {
+                targets: [this.sprite],
+                x: `+=${dist.x * this.scene.cellSize * .5}`,
+                y: `+=${dist.y * this.scene.cellSize * .5}`,
+                delay: 150,
+                duration: 150,
+                ease: "Ease.Sine.InOut",
+                yoyo: true,
+                onUpdate: () => this.updateAmountText(),
+            }),
+            (async () =>
             {
-                const projectile = this.scene.add.sprite(this.x, this.y, Main.Key, Main["air_chubrik_patron (1)"]).play("air_chubrik_patron").setScale(0.25).setDepth(2);
-                await addAsyncTween(this.scene, {
-                    targets: projectile,
-                    x: chubrik2.x,
-                    y: chubrik2.y,
-                    duration: 500,
-                });
-                projectile.destroy();
+                await this.scene.waitFor(150 + 150);
+                await this.projectile(chubrik2.x, chubrik2.y);
+                const damage = Phaser.Math.Clamp(this.attack - chubrik2.defense, 0, Number.MAX_VALUE);
+                await chubrik2.takeDamage(damage);
+            })()
+        ]);
+    }
 
-                chubrik2.sprite.setTintFill(0xffffff);
-                this.scene.time.delayedCall(100, () => chubrik2.sprite.clearTint());
-                this.scene.bloodParticle.explode(10, chubrik2.x, chubrik2.y);
-
-                const text = this.scene.add.bitmapText(chubrik2.x, chubrik2.y, "nokia16", "-15").setOrigin(0.5).setCenterAlign().setDepth(10);
-                this.scene.add.tween({
-                    targets: text,
-                    y: `-=${this.scene.cellSize}`,
-                    alpha: 0,
-                });
-            }
+    async projectile(x: number, y: number)
+    {
+        const projectile = this.scene.add.sprite(this.x, this.y, Main.Key, Main["air_chubrik_patron (1)"]).play("air_chubrik_patron").setScale(0.25).setDepth(2);
+        await addAsyncTween(this.scene, {
+            targets: projectile,
+            x: x,
+            y: y,
+            duration: 500,
         });
+        projectile.destroy();
+    }
+
+    async takeDamage(damage: number)
+    {
+        this.sprite.setTintFill(0xffffff);
+        this.scene.time.delayedCall(100, () => this.sprite.clearTint());
+        this.scene.bloodParticle.explode(10, this.x, this.y);
+
+        const text = this.scene.add.bitmapText(this.x, this.y, "nokia16", `-${damage}`).setOrigin(0.5).setCenterAlign().setDepth(20);
+        this.scene.add.tween({
+            targets: text,
+            y: `-=${this.scene.cellSize}`,
+            alpha: 0,
+        });
+
+        this.life -= damage;
+        if (this.life <= 0)
+        {
+            this.amount--;
+            this.updateAmountText();
+            this.life = this.config.life;
+            if (this.amount <= 0) await this.die();
+            else await addAsyncTween(this.scene, {
+                targets: [this.sprite, this.amountText],
+                scale: `*=1.25`,
+                ease: "Sine.Ease.In",
+                yoyo: true,
+                duration: 150,
+            });
+        };
+
+    }
+
+    async die()
+    {
+
+        await addAsyncTween(this.scene, {
+            targets: [this.sprite, this.amountText],
+            scale: `*=1.5`,
+            alpha: 0,
+            ease: "Sine.Ease.In",
+            duration: 150,
+        });
+
+        const index = this.scene.chubriks.indexOf(this);
+        this.scene.chubriks.splice(index, 1);
+        this.sprite.destroy();
+        this.amountText.destroy();
     }
 
     rangeArray: Phaser.GameObjects.Rectangle[] = [];
 
-    drawRange(col: number, row: number, range = 4)
+    drawRange(range = 4)
     {
-        const pos = this.scene.getWorldPosition(col, row);
+        const pos = this;
+        const { col, row } = this.scene.getLogicPosition(this.x, this.y);
         this.rangeArray.push(this.scene.add.rectangle(pos.x, pos.y, this.scene.cellSize, this.scene.cellSize, 0xAEDAAA, 0.75));
 
         for (let r = row - range; r <= row + range; r++)
