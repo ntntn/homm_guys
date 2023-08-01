@@ -63,7 +63,7 @@ export const resources = {
         // pointerArrow: 'assets/img/joystick/white_thing.png',
         // pointerBtn: 'assets/img/joystick/btn.png',
 
-        // particle: 'assets/img/particle.png',
+        particle: 'assets/img/particle.png',
     },
     atlases: {
         Main: { image: 'Main/texture.png', json: 'Main/texture.json' },
