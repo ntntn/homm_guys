@@ -1,0 +1,229 @@
+{
+	"textures": [
+		{
+			"image": "texture.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 41,
+				"h": 410
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "amount",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 4,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "area",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 45,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "axe",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 86,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "bible",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 127,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "castSpeed",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 168,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "damage",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 209,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "health",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 250,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "knife",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 291,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "moveSpeed",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 332,
+						"w": 33,
+						"h": 33
+					}
+				},
+				{
+					"filename": "saintWater",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 33,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 33,
+						"h": 33
+					},
+					"frame": {
+						"x": 4,
+						"y": 373,
+						"w": 33,
+						"h": 33
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://github.com/odrick/free-tex-packer-core",
+		"version": "0.3.4"
+	}
+}
