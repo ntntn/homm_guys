@@ -22,6 +22,8 @@ export default class GameScene extends CustomScene
 	chubriks: Chubrik[];
 	currentChubrik: Chubrik; // ТЕКУЩИЙ ЧУБРИК (ТОТ, ЧЕЙ ХОД)
 	hero1: Phaser.GameObjects.Image;
+	spellActive: boolean;
+	spellBook: Phaser.GameObjects.Image;
 
 	constructor()
 	{
@@ -60,7 +62,12 @@ export default class GameScene extends CustomScene
 
 		const hero = this.add.image(-this.gameWidth * .5 + 50, -100, Main.Key, Main.air_hero).setScale(0.35)
 		this.hero1 = this.add.image(this.gameWidth * .5 - 50, -100, Main.Key, Main.air_hero).setScale(0.35).setFlipX(true).setTint(0xEB4732);
-		const spellBok = this.add.image(-this.gameWidth * .5 + 25, 150, Main.Key, Main.spellbook);
+		this.spellBook = this.add.image(-this.gameWidth * .5 + 25, 150, Main.Key, Main.spellbook).setAlpha(0.5).setInteractive().on("pointerdown", () =>
+		{
+			let active = this.spellBook.alpha === 1;
+			this.spellBook.alpha = active ? 0.5 : 1;
+			this.spellActive = !active;
+		});
 
 		this.input.on("pointerdown", this.onClick, this); //отлавливание клика мышки
 		this.initResize(); //неважно
@@ -130,27 +137,33 @@ export default class GameScene extends CustomScene
 
 		if (existingChubrik)
 		{
-			//cast spell
-			// const blackRect = this.add.rectangle(0, 0, this.gameWidth, this.gameHeight, 0x000000, 1).setAlpha(0).setDepth(30);
-			// await addAsyncTween(this, {
-			// 	targets: blackRect,
-			// 	alpha: 0.3,
-			// 	duration: 200
-			// });
+			// cast spell
+			if (this.spellActive)
+			{
+				const blackRect = this.add.rectangle(0, 0, this.gameWidth, this.gameHeight, 0x000000, 1).setAlpha(0).setDepth(30);
+				await addAsyncTween(this, {
+					targets: blackRect,
+					alpha: 0.3,
+					duration: 200
+				});
 
-			// const lightning = this.add.sprite(existingChubrik.x, existingChubrik.y, Main.Key, Main["lightning (1)"]).play("lightning").setScale(0.5).setDepth(30);
-			// await this.waitFor(500);
-			// existingChubrik.takeDamage(10);
+				const lightning = this.add.sprite(existingChubrik.x, existingChubrik.y, Main.Key, Main["lightning (1)"]).play("lightning").setScale(0.5).setDepth(30);
+				await this.waitFor(500);
+				existingChubrik.takeDamage(10);
 
-			// await addAsyncTween(this, {
-			// 	targets: blackRect,
-			// 	alpha: 0,
-			// 	duration: 200
-			// });
+				await addAsyncTween(this, {
+					targets: blackRect,
+					alpha: 0,
+					duration: 200
+				});
 
-			// lightning.destroy();
-			// blackRect.destroy();
-			// return;
+				lightning.destroy();
+				blackRect.destroy();
+				this.spellActive = false;
+				this.spellBook.alpha = 0.5;
+				return;
+			}
+
 
 			this.input.enabled = false;
 			await this.currentChubrik.attackAction(existingChubrik);
