@@ -131,31 +131,31 @@ export default class GameScene extends CustomScene
 		if (existingChubrik)
 		{
 			//cast spell
-			const blackRect = this.add.rectangle(0, 0, this.gameWidth, this.gameHeight, 0x000000, 1).setAlpha(0).setDepth(30);
-			await addAsyncTween(this, {
-				targets: blackRect,
-				alpha: 0.3,
-				duration: 200
-			});
+			// const blackRect = this.add.rectangle(0, 0, this.gameWidth, this.gameHeight, 0x000000, 1).setAlpha(0).setDepth(30);
+			// await addAsyncTween(this, {
+			// 	targets: blackRect,
+			// 	alpha: 0.3,
+			// 	duration: 200
+			// });
 
-			const lightning = this.add.sprite(existingChubrik.x, existingChubrik.y, Main.Key, Main["lightning (1)"]).play("lightning").setScale(0.5).setDepth(30);
-			await this.waitFor(500);
-			existingChubrik.takeDamage(10);
+			// const lightning = this.add.sprite(existingChubrik.x, existingChubrik.y, Main.Key, Main["lightning (1)"]).play("lightning").setScale(0.5).setDepth(30);
+			// await this.waitFor(500);
+			// existingChubrik.takeDamage(10);
 
-			await addAsyncTween(this, {
-				targets: blackRect,
-				alpha: 0,
-				duration: 200
-			});
+			// await addAsyncTween(this, {
+			// 	targets: blackRect,
+			// 	alpha: 0,
+			// 	duration: 200
+			// });
 
-			lightning.destroy();
-			blackRect.destroy();
-			return;
-
-			// this.input.enabled = false;
-			// await this.currentChubrik.attackAction(existingChubrik);
-			// this.input.enabled = true;
+			// lightning.destroy();
+			// blackRect.destroy();
 			// return;
+
+			this.input.enabled = false;
+			await this.currentChubrik.attackAction(existingChubrik);
+			this.input.enabled = true;
+			return;
 		}
 
 		if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col, logicPos.row)) return;
