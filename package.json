@@ -11,7 +11,8 @@
         "serve": "serve dist",
         "format": "prettier --check src/scripts/**",
         "format:write": "prettier --write src/scripts/**",
-        "atlasGen": "node src/scripts/utils/atlasGen.js"
+        "atlasGen": "node src/scripts/utils/atlasGen.js",
+        "deploy": "gh-pages -d dist"
     },
     "keywords": [
         "Phaser",
@@ -28,7 +29,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/yandeu/phaser-project-template.git"
+        "url": "https://github.com/ntntn/homm_guys.git"
     },
     "template": {
         "name": "phaser-project-template",
@@ -57,6 +58,7 @@
         "@yandeu/prettier-config": "^0.0.3",
         "copy-webpack-plugin": "^10.1.0",
         "css-loader": "^6.6.0",
+        "gh-pages": "^5.0.0",
         "html-webpack-plugin": "^5.5.0",
         "javascript-obfuscator": "^3.0.0",
         "mini-css-extract-plugin": "^2.5.3",
