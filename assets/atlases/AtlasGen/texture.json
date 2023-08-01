@@ -1,0 +1,103 @@
+{
+	"textures": [
+		{
+			"image": "texture.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 288,
+				"h": 256
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "potion",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 205,
+						"h": 264
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 10,
+						"w": 201,
+						"h": 248
+					},
+					"frame": {
+						"x": 4,
+						"y": 4,
+						"w": 201,
+						"h": 248
+					}
+				},
+				{
+					"filename": "potion1",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 71,
+						"h": 81
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 71,
+						"h": 81
+					},
+					"frame": {
+						"x": 213,
+						"y": 4,
+						"w": 71,
+						"h": 81
+					}
+				},
+				{
+					"filename": "health_bg",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 65,
+						"h": 10
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 65,
+						"h": 10
+					},
+					"frame": {
+						"x": 213,
+						"y": 93,
+						"w": 65,
+						"h": 10
+					}
+				},
+				{
+					"filename": "health_fill",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 65,
+						"h": 10
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 61,
+						"h": 6
+					},
+					"frame": {
+						"x": 213,
+						"y": 111,
+						"w": 61,
+						"h": 6
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://github.com/odrick/free-tex-packer-core",
+		"version": "0.3.4"
+	}
+}
