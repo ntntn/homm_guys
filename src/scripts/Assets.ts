@@ -62,7 +62,9 @@ export const resources = {
         // pointerFrame: 'assets/img/joystick/back.png',
         // pointerArrow: 'assets/img/joystick/white_thing.png',
         // pointerBtn: 'assets/img/joystick/btn.png',
-
+        lightmap: 'assets/img/lightmap.png',
+        lightBg: 'assets/img/lightBg.png',
+        circ: 'assets/img/circ.png',
         particle: 'assets/img/particle.png',
     },
     atlases: {
@@ -102,21 +104,29 @@ export const resources = {
     }
 }
 
-export const Images = valToKey(resources.images) as any;
+export const Images = valToKey(resources.images);
 export const Atlases = valToKey(resources.atlases) as any;
 export const Audios = valToKey(resources.audios) as any;
 export const Jsons = valToKey(resources.jsons) as any;
 
-// function valToKey<T>(obj: T): {[K in keyof T]: {[U in keyof T[K]]: string}} {
-function valToKey<T>(obj: any): { [K in keyof T]: string }
+function valToKey<T>(obj: T): { [K in keyof T]: string }
 {
     const data = {} as any;
-    Object.entries(obj).forEach(e =>
+    Object.entries(obj as any).forEach(e =>
     {
         data[e[0]] = e[0];
     });
     return data;
 }
+// function valToKey<T>(obj: any): { [K in keyof T]: string }
+// {
+//     const data = {} as any;
+//     Object.entries(obj).forEach(e =>
+//     {
+//         data[e[0]] = e[0];
+//     });
+//     return data;
+// }
 
 import EnvironmentKeys from '../assets/atlases/Environment/keys.json';
 export const Environment = { Key: Atlases.Environment, ...EnvironmentKeys };

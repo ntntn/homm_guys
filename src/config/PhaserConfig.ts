@@ -17,7 +17,7 @@ export const PhaserConfig: Phaser.Types.Core.GameConfig = {
     scene: SceneList,
 
     type: Phaser.AUTO,
-    backgroundColor: '#6F654D',
+    backgroundColor: '#353535',
     canvas: document.getElementsByTagName('canvas')[0],
 
     scale: {

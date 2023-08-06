@@ -871,6 +871,27 @@
 					}
 				},
 				{
+					"filename": "pb_back",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 26
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 26
+					},
+					"frame": {
+						"x": 4,
+						"y": 1524,
+						"w": 200,
+						"h": 26
+					}
+				},
+				{
 					"filename": "bird (1)",
 					"rotated": false,
 					"trimmed": true,
@@ -907,7 +928,7 @@
 					},
 					"frame": {
 						"x": 4,
-						"y": 1540,
+						"y": 1558,
 						"w": 192,
 						"h": 176
 					}
@@ -928,7 +949,7 @@
 					},
 					"frame": {
 						"x": 204,
-						"y": 1540,
+						"y": 1558,
 						"w": 184,
 						"h": 168
 					}
@@ -1543,6 +1564,27 @@
 					}
 				},
 				{
+					"filename": "cross",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 31,
+						"h": 31
+					},
+					"frame": {
+						"x": 348,
+						"y": 716,
+						"w": 31,
+						"h": 31
+					}
+				},
+				{
 					"filename": "luzha",
 					"rotated": false,
 					"trimmed": true,
@@ -1578,10 +1620,31 @@
 						"h": 22
 					},
 					"frame": {
-						"x": 204,
+						"x": 396,
 						"y": 1716,
 						"w": 26,
 						"h": 22
+					}
+				},
+				{
+					"filename": "pb_handle",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 26,
+						"h": 26
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 26
+					},
+					"frame": {
+						"x": 972,
+						"y": 1264,
+						"w": 26,
+						"h": 26
 					}
 				},
 				{

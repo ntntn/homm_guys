@@ -1,5 +1,6 @@
 import { Main } from "../Assets";
 import { addAsyncTween } from "../asyncTween";
+import { CustomScene } from "../CustomScene";
 import GameScene from "./GameScene";
 
 export class Chubrik
@@ -33,16 +34,18 @@ export class Chubrik
         this.defense = config.defense;
         this.price = config.price;
         this.amount = Phaser.Math.Between(1, 50);
+        this.sprite = Chubrik.createSprite(scene, config).copyPosition(scene.getWorldPosition(col, row));
+        this.amountText = scene.add.bitmapText(0, 0, "nokia16").setOrigin(0.5).setCenterAlign().setDepth(15).setFontSize(12);
+        this.updateAmountText();
+    }
 
-        const wp = scene.getWorldPosition(col, row);
-        const frame = this.getFrame(config.type);
-        this.sprite = scene.add.sprite(wp.x, wp.y, Main.Key, frame)
+    static createSprite(scene: CustomScene, config: ChubrikConfig)
+    {
+        const frame = Chubrik.getFrame(config.type);
+        return scene.add.sprite(0, 0, Main.Key, frame)
             .setScale(this.getScale(config.type))
             .setDepth(1)
             .play(this.getAnim(config.type));
-
-        this.amountText = scene.add.bitmapText(0, 0, "nokia16").setOrigin(0.5).setCenterAlign().setDepth(15).setFontSize(12);
-        this.updateAmountText();
     }
 
     updateAmountText()
@@ -237,7 +240,7 @@ export class Chubrik
         this.sprite.destroy();
         this.amountText.destroy();
 
-        const body = this.scene.add.image(this.x, this.y, Main.Key, this.getBodyFrame(this.config.type));
+        const body = this.scene.add.image(this.x, this.y, Main.Key, Chubrik.getBodyFrame(this.config.type));
     }
 
     rangeArray: Phaser.GameObjects.Rectangle[] = [];
@@ -273,7 +276,7 @@ export class Chubrik
         this.rangeArray.forEach(r => r.destroy());
     }
 
-    getFrame(type: ChubrikType)
+    static getFrame(type: ChubrikType)
     {
         if (type === "fire_chubrik") return Main.chubrik1;
         if (type === "water_chubrik") return Main["water_chubrik (1)"];
@@ -289,7 +292,7 @@ export class Chubrik
         return Main.blood
     }
 
-    getScale(type: ChubrikType)
+    static getScale(type: ChubrikType)
     {
         if (type === "fire_chubrik") return 0.15;
         if (type === "water_chubrik") return 0.2;
@@ -304,7 +307,7 @@ export class Chubrik
         return 1;
     }
 
-    getAnim(type: ChubrikType)
+    static getAnim(type: ChubrikType)
     {
         if (type === "fire_chubrik") return "fire_chubrik";
         if (type === "water_chubrik") return "water_chubrik";
@@ -320,7 +323,7 @@ export class Chubrik
         return Main.blood
     }
 
-    getBodyFrame(type: ChubrikType)
+    static getBodyFrame(type: ChubrikType)
     {
         if (type === "earth_chubrik") return Main.earth_chubrik_body;
         if (type === "water_chubrik") return Main.water_chubrik_body;
