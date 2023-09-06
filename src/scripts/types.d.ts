@@ -22,3 +22,5 @@ type ChubrikType =
     "air_mage";
 
 type Position = { x: number, y: number }
+
+type ChubrikSlot = { type: ChubrikType, amount: number }

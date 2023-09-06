@@ -22,7 +22,7 @@ export class Chubrik
     get y() { return this.sprite.y }
     get type() { return this.config.type }
 
-    constructor(scene: GameScene, col: number, row: number, config: ChubrikConfig)
+    constructor(scene: GameScene, col: number, row: number, config: ChubrikConfig, amount = Phaser.Math.Between(1, 50))
     {
         this.scene = scene;
         this.config = config;
@@ -33,10 +33,11 @@ export class Chubrik
         this.range = config.range;
         this.defense = config.defense;
         this.price = config.price;
-        this.amount = Phaser.Math.Between(1, 50);
+        this.amount = amount;
         this.sprite = Chubrik.createSprite(scene, config.type).copyPosition(scene.getWorldPosition(col, row));
-        this.amountText = scene.add.bitmapText(0, 0, "nokia16").setOrigin(0.5).setCenterAlign().setDepth(15).setFontSize(12);
+        this.amountText = scene.add.bitmapText(0, 0, "nokia16").setOrigin(0.5).setCenterAlign().setDepth(15).setFontSize(11).setTint(0x1B1B1B);
         this.updateAmountText();
+        this.sprite.setFlipX(col > 0);
     }
 
     static createSprite(scene: CustomScene, type: ChubrikType)
@@ -50,13 +51,24 @@ export class Chubrik
 
     updateAmountText()
     {
-        this.amountText.setPosition(this.x, this.y + this.sprite.displayHeight * .5).setText(this.amount.toString());
+        this.amountText.setPosition(this.x, this.y + this.sprite.displayHeight * .36).setText(this.amount.toString());
     }
 
     async moveAction(pos: Position)
     {
         this.clearRange();
         this.sprite.setFlipX(pos.x - this.x < 0);
+
+        const scaleTween = this.scene.tweens.add({
+            targets: this.sprite,
+            scaleY: `*=1.1`,
+            scaleX: `*=0.9`,
+            yoyo: true,
+            repeat: -1,
+            duration: 100,
+            ease: 'Sine.easeIn'
+        });
+
         await addAsyncTween(this.scene, {
             targets: [this.sprite],
             x: pos.x,
@@ -64,6 +76,8 @@ export class Chubrik
             duration: 500,
             onUpdate: () => this.updateAmountText(),
         });
+
+        scaleTween.remove();
     }
 
     async attackAction(chubrik2: Chubrik)

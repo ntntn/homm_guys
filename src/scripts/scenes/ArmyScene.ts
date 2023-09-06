@@ -5,13 +5,19 @@ import { Distributable, Distribute } from "../Utils/Distribute";
 import { Chubrik } from "./Chubrik";
 import GameScene from "./GameScene";
 import PurchaseScene from "./PurchaseScene";
+import { VersusManager } from "./VersusManager";
 
 export default class ArmyScene extends CustomScene
 {
 	static instance: ArmyScene;
 
 	config: ChubrikConfig[];
-	slots: { rect: Phaser.GameObjects.Rectangle, image: Phaser.GameObjects.Image, text: Phaser.GameObjects.BitmapText, chubrik: { type: ChubrikType, amount: number } }[];
+	slots: {
+		rect: Phaser.GameObjects.Rectangle,
+		image: Phaser.GameObjects.Image,
+		text: Phaser.GameObjects.BitmapText,
+		chubrik: ChubrikSlot
+	}[];
 	gold: number;
 	goldText: Phaser.GameObjects.BitmapText;
 	goldIcon: Phaser.GameObjects.Image;
@@ -28,16 +34,17 @@ export default class ArmyScene extends CustomScene
 	{
 		this.camera.setBackgroundColor("#212C36")
 		this.config = this.cache.json.get("Chubriks") as ChubrikConfig[];
-		this.gold = 1000;
+		this.gold = 5000;
 
 		this.initSlots();
 		this.initChubriks();
 		this.initGold();
+		this.initDoneBtn();
 		this.initCloseBtn();
 
 		this.add.image(0, 0, Images.lightmap).setAlpha(0.25);
 		this.add.image(0, 0, Images.lightBg).setAlpha(0.25);
-		
+
 		this.emitters = [];
 		this.emitters.push(this.add.particles(0, 0, Images.particle1, {
 			alpha: { start: 1, end: 0 },
@@ -117,6 +124,43 @@ export default class ArmyScene extends CustomScene
 			this.scene.start("MenuScene");
 		});
 		closeBtn.setPosition(this.gameWidth * .5 - 32, -this.gameHeight * .5 + 32);
+	}
+
+	initDoneBtn()
+	{
+		const doneBtn = this.add.bitmapText(this.slots[this.slots.length - 1].rect.x + 100, this.view.height * .5 - 40, "nokia16", "Done").setOrigin(0.5).setCenterAlign().setFontSize(24);
+		enableClickEvent(doneBtn);
+		doneBtn.setInteractive().on("click", () =>
+		{
+			if (this.tweens.getTweensOf(doneBtn).length > 0) return;
+
+			this.tweens.add({
+				targets: doneBtn,
+				scale: `*=0.8`,
+				ease: "Sine.easeIn",
+				duration: 125,
+				yoyo: true,
+				onStart: () =>
+				{
+					if (this.slots.filter(e => e.chubrik == null).length === this.slots.length) return;
+
+					if (VersusManager.Instance.playerA != null)
+					{
+						VersusManager.Instance.playerB = {
+							slots: this.slots.map(e => e.chubrik)
+						}
+						this.scene.start("GameScene")
+					}
+					else
+					{
+						VersusManager.Instance.playerA = {
+							slots: this.slots.map(e => e.chubrik)
+						}
+						this.scene.restart();
+					}
+				}
+			})
+		});
 	}
 
 	onPurchased(data: { type: ChubrikType, amount: number, price: number })

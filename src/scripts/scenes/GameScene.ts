@@ -2,6 +2,7 @@ import { Main } from "../Assets";
 import { addAsyncTween } from "../asyncTween";
 import { CustomScene } from "../CustomScene";
 import { Chubrik } from "./Chubrik";
+import { VersusManager } from "./VersusManager";
 
 const wrap = (num: number, min: number, max: number): number => ((((num - min) % (max - min)) + (max - min)) % (max - min)) + min;
 (window as any).wrap = wrap;
@@ -43,19 +44,32 @@ export default class GameScene extends CustomScene
 		this.createBloodEmitter(); //излучатель частиц крови
 		this.createGrid(); //создать поле
 
-		this.chubriks = [
-			new Chubrik(this, 0, 0, this.config.find(e => e.type === "fire_chubrik")!),
-			new Chubrik(this, 0, 2, this.config.find(e => e.type === "water_chubrik")!),
-			new Chubrik(this, 0, 4, this.config.find(e => e.type === "earth_chubrik")!),
-			new Chubrik(this, 0, 6, this.config.find(e => e.type === "air_chubrik")!),
-			new Chubrik(this, 0, 8, this.config.find(e => e.type === "dragon")!),
-			new Chubrik(this, 15, 0, this.config.find(e => e.type === "water_dragon")!),
-			new Chubrik(this, 15, 2, this.config.find(e => e.type === "earth_bender")!),
-			new Chubrik(this, 15, 4, this.config.find(e => e.type === "air_bird")!),
-			new Chubrik(this, 15, 6, this.config.find(e => e.type === "chertik")!),
-			new Chubrik(this, 15, 8, this.config.find(e => e.type === "skeleton")!),
-			new Chubrik(this, 15, 9, this.config.find(e => e.type === "air_mage")!),
-		];
+		const versusConfig = VersusManager.Instance;
+		if (versusConfig.playerA && versusConfig.playerB)
+		{
+			console.log(versusConfig);
+			console.log(versusConfig);
+			this.chubriks = [
+				...versusConfig.playerA.slots.filter(e => e).map((slot, i) => new Chubrik(this, 0, i, this.config.find(config => config.type === slot.type)!, slot.amount)),
+				...versusConfig.playerB.slots.filter(e => e).map((slot, i) => new Chubrik(this, 15, i, this.config.find(config => config.type === slot.type)!, slot.amount))
+			];
+		}
+		else
+		{
+			this.chubriks = [
+				new Chubrik(this, 0, 0, this.config.find(e => e.type === "fire_chubrik")!),
+				new Chubrik(this, 0, 2, this.config.find(e => e.type === "water_chubrik")!),
+				new Chubrik(this, 0, 4, this.config.find(e => e.type === "earth_chubrik")!),
+				new Chubrik(this, 0, 6, this.config.find(e => e.type === "air_chubrik")!),
+				new Chubrik(this, 0, 8, this.config.find(e => e.type === "dragon")!),
+				new Chubrik(this, 15, 0, this.config.find(e => e.type === "water_dragon")!),
+				new Chubrik(this, 15, 2, this.config.find(e => e.type === "earth_bender")!),
+				new Chubrik(this, 15, 4, this.config.find(e => e.type === "air_bird")!),
+				new Chubrik(this, 15, 6, this.config.find(e => e.type === "chertik")!),
+				new Chubrik(this, 15, 8, this.config.find(e => e.type === "skeleton")!),
+				new Chubrik(this, 15, 9, this.config.find(e => e.type === "air_mage")!),
+			];
+		}
 
 		this.currentChubrik = this.chubriks[0]; //задаем чубрика чей ход
 		this.currentChubrik.drawRange(); //отрисовываем дальность хода
