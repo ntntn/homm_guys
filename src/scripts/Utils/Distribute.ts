@@ -147,7 +147,7 @@ const _Distribute = {
         objects.forEach(object => object.setPosition(object.x + xOffset, object.y + yOffset));
     },
 
-    AsGrid(objects: Distributable[], rows: number, cols: number, rowGap: number, colGap: number = rowGap)
+    AsGrid(objects: Distributable[], rows: number, cols: number, rowGap: number, colGap: number = rowGap, stepOffset?: { eachRow?: number, eachCol?: number, rowOffsetX?: number, rowOffsetY?: number, colOffsetX?: number, colOffsetY?: number, })
     {
         if (objects.length === 0) return;
         objects = objects.filter(o => o !== undefined);
@@ -178,12 +178,32 @@ const _Distribute = {
             {
                 const index = row * cols + col;
                 const object = objects[index];
-                if (!object) return;
-                object.x = x;
-                object.y = y;
+                if (object != null)
+                {
+                    object.x = x;
+                    object.y = y;
+                }
+
                 x += stepX;
+                if (stepOffset != null)
+                {
+                    if (stepOffset.eachCol != null && stepOffset.eachCol % col === 0)
+                    {
+                        x += stepOffset.colOffsetX ?? 0;
+                        y += stepOffset.colOffsetY ?? 0;
+                    }
+                }
             }
+
             y += stepY;
+            if (stepOffset != null)
+            {
+                if (stepOffset.eachRow != null && stepOffset.eachRow % row === 0)
+                {
+                    x += stepOffset.rowOffsetX ?? 0;
+                    y += stepOffset.rowOffsetY ?? 0;
+                }
+            }
         }
 
         objects.forEach(o => {

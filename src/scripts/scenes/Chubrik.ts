@@ -34,18 +34,18 @@ export class Chubrik
         this.defense = config.defense;
         this.price = config.price;
         this.amount = Phaser.Math.Between(1, 50);
-        this.sprite = Chubrik.createSprite(scene, config).copyPosition(scene.getWorldPosition(col, row));
+        this.sprite = Chubrik.createSprite(scene, config.type).copyPosition(scene.getWorldPosition(col, row));
         this.amountText = scene.add.bitmapText(0, 0, "nokia16").setOrigin(0.5).setCenterAlign().setDepth(15).setFontSize(12);
         this.updateAmountText();
     }
 
-    static createSprite(scene: CustomScene, config: ChubrikConfig)
+    static createSprite(scene: CustomScene, type: ChubrikType)
     {
-        const frame = Chubrik.getFrame(config.type);
+        const frame = Chubrik.getFrame(type);
         return scene.add.sprite(0, 0, Main.Key, frame)
-            .setScale(this.getScale(config.type))
+            .setScale(this.getScale(type))
             .setDepth(1)
-            .play(this.getAnim(config.type));
+            .play(this.getAnim(type));
     }
 
     updateAmountText()
