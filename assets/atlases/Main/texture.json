@@ -871,6 +871,27 @@
 					}
 				},
 				{
+					"filename": "pb_back",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 200,
+						"h": 26
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 200,
+						"h": 26
+					},
+					"frame": {
+						"x": 4,
+						"y": 1524,
+						"w": 200,
+						"h": 26
+					}
+				},
+				{
 					"filename": "bird (1)",
 					"rotated": false,
 					"trimmed": true,
@@ -907,7 +928,7 @@
 					},
 					"frame": {
 						"x": 4,
-						"y": 1540,
+						"y": 1558,
 						"w": 192,
 						"h": 176
 					}
@@ -928,7 +949,7 @@
 					},
 					"frame": {
 						"x": 204,
-						"y": 1540,
+						"y": 1558,
 						"w": 184,
 						"h": 168
 					}
@@ -1438,6 +1459,27 @@
 					}
 				},
 				{
+					"filename": "particle1",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 44,
+						"h": 40
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 0,
+						"w": 42,
+						"h": 40
+					},
+					"frame": {
+						"x": 652,
+						"y": 720,
+						"w": 42,
+						"h": 40
+					}
+				},
+				{
 					"filename": "fire_hero",
 					"rotated": false,
 					"trimmed": false,
@@ -1543,6 +1585,27 @@
 					}
 				},
 				{
+					"filename": "cross",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 31,
+						"h": 31
+					},
+					"frame": {
+						"x": 348,
+						"y": 716,
+						"w": 31,
+						"h": 31
+					}
+				},
+				{
 					"filename": "luzha",
 					"rotated": false,
 					"trimmed": true,
@@ -1564,6 +1627,48 @@
 					}
 				},
 				{
+					"filename": "particle2",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 28,
+						"h": 30
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 28,
+						"h": 30
+					},
+					"frame": {
+						"x": 270,
+						"y": 1520,
+						"w": 28,
+						"h": 30
+					}
+				},
+				{
+					"filename": "particle",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 34,
+						"h": 35
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 28,
+						"h": 29
+					},
+					"frame": {
+						"x": 306,
+						"y": 1520,
+						"w": 28,
+						"h": 29
+					}
+				},
+				{
 					"filename": "air_hero1",
 					"rotated": false,
 					"trimmed": true,
@@ -1578,10 +1683,52 @@
 						"h": 22
 					},
 					"frame": {
-						"x": 204,
+						"x": 396,
 						"y": 1716,
 						"w": 26,
 						"h": 22
+					}
+				},
+				{
+					"filename": "pb_handle",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 26,
+						"h": 26
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 26,
+						"h": 26
+					},
+					"frame": {
+						"x": 972,
+						"y": 1264,
+						"w": 26,
+						"h": 26
+					}
+				},
+				{
+					"filename": "coin",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 3,
+						"w": 21,
+						"h": 25
+					},
+					"frame": {
+						"x": 1116,
+						"y": 4,
+						"w": 21,
+						"h": 25
 					}
 				},
 				{
@@ -1599,8 +1746,8 @@
 						"h": 14
 					},
 					"frame": {
-						"x": 1116,
-						"y": 4,
+						"x": 1520,
+						"y": 892,
 						"w": 24,
 						"h": 14
 					}
@@ -1620,8 +1767,8 @@
 						"h": 18
 					},
 					"frame": {
-						"x": 1520,
-						"y": 892,
+						"x": 1604,
+						"y": 388,
 						"w": 23,
 						"h": 18
 					}
@@ -1641,8 +1788,8 @@
 						"h": 20
 					},
 					"frame": {
-						"x": 1604,
-						"y": 388,
+						"x": 1116,
+						"y": 37,
 						"w": 22,
 						"h": 20
 					}
@@ -1662,8 +1809,8 @@
 						"h": 20
 					},
 					"frame": {
-						"x": 1116,
-						"y": 26,
+						"x": 1520,
+						"y": 914,
 						"w": 22,
 						"h": 20
 					}
@@ -1683,8 +1830,8 @@
 						"h": 20
 					},
 					"frame": {
-						"x": 1520,
-						"y": 918,
+						"x": 1604,
+						"y": 414,
 						"w": 22,
 						"h": 20
 					}
@@ -1704,8 +1851,8 @@
 						"h": 20
 					},
 					"frame": {
-						"x": 1604,
-						"y": 416,
+						"x": 1116,
+						"y": 65,
 						"w": 22,
 						"h": 20
 					}
@@ -1788,8 +1935,8 @@
 						"h": 20
 					},
 					"frame": {
-						"x": 1520,
-						"y": 918,
+						"x": 1604,
+						"y": 414,
 						"w": 22,
 						"h": 20
 					}
