@@ -17,6 +17,10 @@ export default class PurchaseScene extends CustomScene
     pbMin: number;
     pbMax: number;
     buyBtn: Phaser.GameObjects.BitmapText;
+    goldText: Phaser.GameObjects.BitmapText;
+    goldIcon: Phaser.GameObjects.Image;
+    background: Phaser.GameObjects.Rectangle;
+    config: ChubrikConfig;
 
     constructor()
     {
@@ -27,10 +31,10 @@ export default class PurchaseScene extends CustomScene
 
     create(config: ChubrikConfig)
     {
-        this.camera.setBackgroundColor("#212C36")
-
-
-        const rect = this.add.rectangle(0, 0, 256, 256, 0x000000, 0.25);
+        // this.camera.setBackgroundColor("#212C36")
+        this.config = config;
+        const back = this.add.rectangle(0, 0, this.gameWidth, this.gameHeight, 0x000000, 0.8).setInteractive();
+        this.background = this.add.rectangle(0, 0, 256, 256, 0x000000, 0.95);
         const sprite = Chubrik.createSprite(this, config.type);
         const statsContainer = this.add.container(0, 0, [
             this.add.bitmapText(0, 0, "nokia16", `life: ${config.life}`).setLeftAlign(),
@@ -53,18 +57,22 @@ export default class PurchaseScene extends CustomScene
         this.pbText = this.add.bitmapText(0, 0, "nokia16", "0").setOrigin(0.5).setCenterAlign(); 1
         this.pbMin = this.pbBar.getLeftCenter().x!;
         this.pbMax = this.pbBar.getRightCenter().x! - this.pbHandle.width * .5;
+        this.goldText = this.add.bitmapText(0, 0, "nokia16", "0").setOrigin(0.5).setCenterAlign().setFontSize(24);
+        this.goldIcon = this.add.image(0, 0, Main.Key, Main.coin).setOrigin(0, 0.5).setScale(0.7);
         this.buyBtn = this.add.bitmapText(0, 0, "nokia16", "buy").setOrigin(0.5).setCenterAlign().setFontSize(24);
 
         Distribute.AsColumn(statsContainer.list as Distributable[], 10);
         Distribute.AsRow([sprite, statsContainer], 64);
+        Distribute.AsRow([this.goldText, this.goldIcon, this.buyBtn], [0, 40], 0, this.background.getBottomCenter().y! - 20);
+
         statsContainer.y -= 30;
         sprite.y -= 30;
         sprite.x += 15;
-        this.pbBar.y = rect.getBottomCenter().y! - 60;
-        this.pbHandle.y = rect.getBottomCenter().y! - 60;
+
+        this.pbBar.y = this.background.getBottomCenter().y! - 60;
+        this.pbHandle.y = this.background.getBottomCenter().y! - 60;
         this.pbHandle.x = this.pbMin;
         this.pbText.setPosition(0, this.pbBar.getBottomCenter().y);
-        this.buyBtn.y = rect.getBottomCenter().y! - 20;
 
         this.pbBar.setInteractive().on("pointerdown", () =>
         {
@@ -77,18 +85,24 @@ export default class PurchaseScene extends CustomScene
         this.input.on("pointerup", () => this.pbHandle.setData("pointerdown", false));
 
         enableClickEvent(this.buyBtn)
-        this.buyBtn.setInteractive().on("click", () => this.tweens.add({
-            targets: this.buyBtn,
-            scale: `*=0.8`,
-            ease: "Sine.easeIn",
-            duration: 125,
-            yoyo: true,
-            onStart: () =>
-            {
-                this.close();
-                ArmyScene.instance.onPurchased({ type: config.type, amount: this.amount });
-            }
-        }))
+        this.buyBtn.setInteractive().on("click", () =>
+        {
+            if (this.tweens.getTweensOf(this.buyBtn).length > 0) return;
+
+            this.tweens.add({
+                targets: this.buyBtn,
+                scale: `*=0.8`,
+                ease: "Sine.easeIn",
+                duration: 125,
+                yoyo: true,
+                onStart: () =>
+                {
+                    if (this.price > ArmyScene.instance.gold) return;
+                    this.close();
+                    ArmyScene.instance.onPurchased({ type: config.type, amount: this.amount, price: this.price });
+                }
+            })
+        });
 
         this.show();
         this.initResize();
@@ -96,9 +110,7 @@ export default class PurchaseScene extends CustomScene
 
     close()
     {
-        // this.hide(() => 
         this.scene.stop()
-        // );
     }
 
     update(time: number, delta: number)
@@ -109,7 +121,14 @@ export default class PurchaseScene extends CustomScene
         ptr.updateWorldPoint(this.camera);
         this.pbBar.getRightCenter().x! - this.pbHandle.width * .5;
         this.pbHandle.x = Phaser.Math.Clamp(ptr.worldX, this.pbMin, this.pbMax);
-        this.pbText.setText(this.amount.toFixed(0))
+        this.pbText.setText(this.amount.toFixed(0));
+        this.goldText.setText(this.price.toString());
+        Distribute.AsRow([this.goldText, this.goldIcon, this.buyBtn], [0, 40], 0, this.background.getBottomCenter().y! - 20);
+        if (this.price > ArmyScene.instance.gold) {
+            this.goldText.setTint(0xff0000);
+        } else {
+            this.goldText.clearTint();
+        }
     }
 
     get progress()
@@ -120,6 +139,11 @@ export default class PurchaseScene extends CustomScene
     get amount()
     {
         return Math.floor(100 * this.progress);
+    }
+
+    get price()
+    {
+        return this.config.price * this.amount;
     }
 
     onResize(): void

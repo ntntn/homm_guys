@@ -66,6 +66,8 @@ export const resources = {
         lightBg: 'assets/img/lightBg.png',
         circ: 'assets/img/circ.png',
         particle: 'assets/img/particle.png',
+        particle1: 'assets/img/particle1.png',
+        particle2: 'assets/img/particle2.png',
     },
     atlases: {
         Main: { image: 'Main/texture.png', json: 'Main/texture.json' },
