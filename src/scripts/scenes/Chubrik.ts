@@ -174,14 +174,16 @@ export class Chubrik
             {
                 await this.scene.waitFor(150 + 150);
                 await this.projectile(chubrik2.x, chubrik2.y);
-                // let _i1 = 0.05 * (this.attack - chubrik2.defense);
-                // let _r1 = 0.025 * (chubrik2.defense - this.attack);
+                let i1 = 0.05 * (this.attack - chubrik2.defense);
+                let r1 = 0.025 * (chubrik2.defense - this.attack);
                 // const i1 = this.attack >= chubrik2.defense ? _i1 : 0.1;
                 // const r1 = chubrik2.defense >= this.attack ? _r1 : 1;
-                // const damage1 = this.attack * (1 + i1) * (1 - r1);
-                // console.log("DAMAGE: ", this.attack, chubrik2.defense, damage1, _i1, _r1, i1, r1);
+                const bd = this.attack * this.amount;
+                const damage = bd * (1 + i1) * (1 - r1);
+                console.log("DAMAGE: ", damage, i1, r1, this.attack, chubrik2.defense);
+
                 // const damage = Phaser.Math.Clamp(this.attack * this.amount - chubrik2.defense * chubrik2.amount, 0, Number.MAX_VALUE);
-                const damage = this.attack * this.amount - chubrik2.defense * this.amount;
+                // const damage = this.attack * this.amount - chubrik2.defense * this.amount;
                 await chubrik2.takeDamage(damage);
             })()
         ]);
@@ -207,19 +209,26 @@ export class Chubrik
         this.scene.bloodParticle.explode(10, this.x, this.y);
 
         const prevAmount = this.amount;
+        const hp = this.life + (this.config.life * (this.amount - 1)) //хп текущего + хп всех остальных
+        const current = hp - damage;
+        
+        this.amount = Math.ceil(current / this.config.life);
+        this.life = current % this.config.life ?? this.config.life;
 
-        while (damage > 0)
-        {
-            this.life -= damage;
+        console.log(damage, hp, current, this.amount, this.life);
 
-            if (this.life <= 0)
-            {
-                damage = Math.abs(this.life);
-                this.life = this.config.life;
-                this.amount--;
-                if (this.amount <= 0) break;
-            }
-        };
+        // while (damage > 0)
+        // {
+        //     this.life -= damage;
+
+        //     if (this.life <= 0)
+        //     {
+        //         damage = Math.abs(this.life);
+        //         this.life = this.config.life;
+        //         this.amount--;
+        //         if (this.amount <= 0) break;
+        //     }
+        // };
 
         const text = this.scene.add.bitmapText(this.x, this.y, "nokia16", `-${prevAmount - this.amount}`).setOrigin(0.5).setCenterAlign().setDepth(20);
         this.scene.add.tween({
@@ -266,7 +275,7 @@ export class Chubrik
 
     rangeArray: Phaser.GameObjects.Rectangle[] = [];
 
-    drawRange(range = 4)
+    drawRange(range = this.config.speed)
     {
         const pos = this;
         const { col, row } = this.scene.getLogicPosition(this.x, this.y);

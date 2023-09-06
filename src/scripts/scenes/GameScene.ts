@@ -57,17 +57,17 @@ export default class GameScene extends CustomScene
 		else
 		{
 			this.chubriks = [
-				new Chubrik(this, 0, 0, this.config.find(e => e.type === "fire_chubrik")!),
-				new Chubrik(this, 0, 2, this.config.find(e => e.type === "water_chubrik")!),
-				new Chubrik(this, 0, 4, this.config.find(e => e.type === "earth_chubrik")!),
-				new Chubrik(this, 0, 6, this.config.find(e => e.type === "air_chubrik")!),
-				new Chubrik(this, 0, 8, this.config.find(e => e.type === "dragon")!),
-				new Chubrik(this, 15, 0, this.config.find(e => e.type === "water_dragon")!),
-				new Chubrik(this, 15, 2, this.config.find(e => e.type === "earth_bender")!),
-				new Chubrik(this, 15, 4, this.config.find(e => e.type === "air_bird")!),
-				new Chubrik(this, 15, 6, this.config.find(e => e.type === "chertik")!),
-				new Chubrik(this, 15, 8, this.config.find(e => e.type === "skeleton")!),
-				new Chubrik(this, 15, 9, this.config.find(e => e.type === "air_mage")!),
+				new Chubrik(this, 0, 0, this.config.find(e => e.type === "fire_chubrik")!, 100),
+				// new Chubrik(this, 0, 2, this.config.find(e => e.type === "water_chubrik")!),
+				// new Chubrik(this, 0, 4, this.config.find(e => e.type === "earth_chubrik")!),
+				// new Chubrik(this, 0, 6, this.config.find(e => e.type === "air_chubrik")!),
+				// new Chubrik(this, 0, 8, this.config.find(e => e.type === "dragon")!),
+				// new Chubrik(this, 15, 0, this.config.find(e => e.type === "water_dragon")!),
+				// new Chubrik(this, 15, 2, this.config.find(e => e.type === "earth_bender")!),
+				// new Chubrik(this, 15, 4, this.config.find(e => e.type === "air_bird")!),
+				// new Chubrik(this, 15, 6, this.config.find(e => e.type === "chertik")!),
+				// new Chubrik(this, 15, 8, this.config.find(e => e.type === "skeleton")!),
+				new Chubrik(this, 15, 9, this.config.find(e => e.type === "fire_chubrik")!, 400),
 			];
 		}
 
@@ -186,7 +186,7 @@ export default class GameScene extends CustomScene
 			return;
 		}
 
-		if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col, logicPos.row)) return;
+		if (!this.isRangeValid(curLogicPos.col, curLogicPos.row, logicPos.col, logicPos.row, this.currentChubrik.speed)) return;
 
 		this.input.enabled = false;
 		await this.currentChubrik.moveAction(pos);
