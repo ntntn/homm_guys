@@ -174,7 +174,14 @@ export class Chubrik
             {
                 await this.scene.waitFor(150 + 150);
                 await this.projectile(chubrik2.x, chubrik2.y);
-                const damage = Phaser.Math.Clamp(this.attack * this.amount - chubrik2.defense * chubrik2.amount, 0, Number.MAX_VALUE);
+                // let _i1 = 0.05 * (this.attack - chubrik2.defense);
+                // let _r1 = 0.025 * (chubrik2.defense - this.attack);
+                // const i1 = this.attack >= chubrik2.defense ? _i1 : 0.1;
+                // const r1 = chubrik2.defense >= this.attack ? _r1 : 1;
+                // const damage1 = this.attack * (1 + i1) * (1 - r1);
+                // console.log("DAMAGE: ", this.attack, chubrik2.defense, damage1, _i1, _r1, i1, r1);
+                // const damage = Phaser.Math.Clamp(this.attack * this.amount - chubrik2.defense * chubrik2.amount, 0, Number.MAX_VALUE);
+                const damage = this.attack * this.amount - chubrik2.defense * this.amount;
                 await chubrik2.takeDamage(damage);
             })()
         ]);
