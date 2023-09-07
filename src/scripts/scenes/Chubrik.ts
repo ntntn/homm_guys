@@ -96,7 +96,7 @@ export class Chubrik
             const logicPos = this.scene.getLogicPosition(chubrik2.x, chubrik2.y);
             const cellPositions = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]].map(e => { return { col: logicPos.col + e[0], row: logicPos.row + e[1] } }).filter(e =>
             {
-                const isRangeValid = this.scene.isRangeValid(curLogicPos.col, curLogicPos.row, e.col, e.row);
+                const isRangeValid = this.scene.isRangeValid(curLogicPos.col, curLogicPos.row, e.col, e.row, this.config.speed);
                 const existing = this.scene.getChubrik(e.col, e.row);
                 console.log(e, isRangeValid, existing);
                 return this.scene.isValid(e.col, e.row) && (!existing || existing == this) && isRangeValid;
@@ -150,7 +150,16 @@ export class Chubrik
             (async () =>
             {
                 await this.scene.waitFor(150 + 150);
-                const damage = Phaser.Math.Clamp(this.attack - chubrik2.defense, 0, Number.MAX_VALUE);
+
+                let i1 = 0.05 * (this.attack - chubrik2.defense);
+                let r1 = 0.025 * (chubrik2.defense - this.attack);
+                
+                const bd = this.attack * this.amount;
+                const damage = bd * (this.attack >= chubrik2.defense ? (1 + i1) : (1 - r1));
+                console.log("DAMAGE: ", damage, i1, r1, this.attack, chubrik2.defense);
+
+                // const damage = Phaser.Math.Clamp(this.attack * this.amount - chubrik2.defense * chubrik2.amount, 0, Number.MAX_VALUE);
+                // const damage = this.attack * this.amount - chubrik2.defense * this.amount;
                 await chubrik2.takeDamage(damage);
             })()
         ]);
@@ -176,10 +185,12 @@ export class Chubrik
                 await this.projectile(chubrik2.x, chubrik2.y);
                 let i1 = 0.05 * (this.attack - chubrik2.defense);
                 let r1 = 0.025 * (chubrik2.defense - this.attack);
+
+                // if ()
                 // const i1 = this.attack >= chubrik2.defense ? _i1 : 0.1;
                 // const r1 = chubrik2.defense >= this.attack ? _r1 : 1;
                 const bd = this.attack * this.amount;
-                const damage = bd * (1 + i1) * (1 - r1);
+                const damage = bd * (this.attack >= chubrik2.defense ? (1 + i1) : (1 - r1));
                 console.log("DAMAGE: ", damage, i1, r1, this.attack, chubrik2.defense);
 
                 // const damage = Phaser.Math.Clamp(this.attack * this.amount - chubrik2.defense * chubrik2.amount, 0, Number.MAX_VALUE);
@@ -211,7 +222,7 @@ export class Chubrik
         const prevAmount = this.amount;
         const hp = this.life + (this.config.life * (this.amount - 1)) //хп текущего + хп всех остальных
         const current = hp - damage;
-        
+
         this.amount = Math.ceil(current / this.config.life);
         this.life = current % this.config.life ?? this.config.life;
 

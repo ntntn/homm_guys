@@ -7,17 +7,19 @@ import GameScene from "./GameScene";
 import PurchaseScene from "./PurchaseScene";
 import { VersusManager } from "./VersusManager";
 
+type Slot = {
+	rect: Phaser.GameObjects.Rectangle,
+	image: Phaser.GameObjects.Image,
+	text: Phaser.GameObjects.BitmapText,
+	chubrik: ChubrikSlot
+};
+
 export default class ArmyScene extends CustomScene
 {
 	static instance: ArmyScene;
 
 	config: ChubrikConfig[];
-	slots: {
-		rect: Phaser.GameObjects.Rectangle,
-		image: Phaser.GameObjects.Image,
-		text: Phaser.GameObjects.BitmapText,
-		chubrik: ChubrikSlot
-	}[];
+	slots: Slot[];
 	gold: number;
 	goldText: Phaser.GameObjects.BitmapText;
 	goldIcon: Phaser.GameObjects.Image;
@@ -40,6 +42,7 @@ export default class ArmyScene extends CustomScene
 		this.initChubriks();
 		this.initGold();
 		this.initDoneBtn();
+		this.initRngBtn();
 		this.initCloseBtn();
 
 		this.add.image(0, 0, Images.lightmap).setAlpha(0.25);
@@ -163,6 +166,70 @@ export default class ArmyScene extends CustomScene
 		});
 	}
 
+	initRngBtn()
+	{
+		const rngBtn = this.add.bitmapText(this.slots[0].rect.x - 100, this.view.height * .5 - 40, "nokia16", "rng").setOrigin(0.5).setCenterAlign().setFontSize(24);
+		enableClickEvent(rngBtn);
+		rngBtn.setInteractive().on("click", () =>
+		{
+			if (this.tweens.getTweensOf(rngBtn).length > 0) return;
+
+			const randomizeSlots = () =>
+			{
+				const types = this.config.map(e => e.type);
+				this.slots.forEach(s =>
+				{
+					const type = Phaser.Math.RND.weightedPick(types);
+					types.splice(types.indexOf(type), 1);
+					this.setChubrik(s, type);
+					s.text.setText(s.chubrik.amount.toString());
+				});
+
+				this.slots.forEach(s =>
+				{
+					const { type } = s.chubrik;
+					this.onPurchased({ type: type, amount: 1, price: this.config.find(e => e.type == type)!.price });
+				});
+
+				this.slots.forEach(s =>
+				{
+					const { type } = s.chubrik;
+					const gold = Phaser.Math.Between(0, this.gold);
+					const cfg = this.config.find(e => e.type == type)!;
+					const amount = Math.floor(gold / cfg.price);
+					const price = amount * cfg.price;
+					this.onPurchased({ amount, price, type });
+				});
+			}
+
+			randomizeSlots();
+
+			this.tweens.add({
+				targets: rngBtn,
+				scale: `*=0.8`,
+				ease: "Sine.easeIn",
+				duration: 125,
+				yoyo: true,
+				onStart: () =>
+				{
+					// if (this.slots.filter(e => e.chubrik == null).length === this.slots.length) return;
+
+
+
+					// VersusManager.Instance.playerB = {
+					// 	slots: this.slots.map(e => e.chubrik)
+					// }
+
+					// this.scene.start("GameScene")
+
+					// VersusManager.Instance.playerA = {
+					// 	slots: this.slots.map(e => e.chubrik)
+					// }
+				}
+			})
+		});
+	}
+
 	onPurchased(data: { type: ChubrikType, amount: number, price: number })
 	{
 		const { type, amount, price } = data;
@@ -177,9 +244,7 @@ export default class ArmyScene extends CustomScene
 
 		if (!slot.chubrik)
 		{
-			slot.chubrik = data;
-			slot.image = Chubrik.createSprite(this, type).setPosition(slot.rect.x, slot.rect.y);
-			slot.text = this.add.bitmapText(slot.rect.x, slot.rect.y + 30, "nokia16").setOrigin(0.5).setCenterAlign().setDepth(2);
+			this.setChubrik(slot, type)
 		} else
 		{
 			slot.chubrik.amount += amount;
@@ -189,6 +254,13 @@ export default class ArmyScene extends CustomScene
 
 		this.gold -= price;
 		this.goldText.setText(this.gold.toString());
+	}
+
+	setChubrik(slot: Slot, type: ChubrikType)
+	{
+		slot.chubrik = { type: type, amount: 0 };
+		slot.image = Chubrik.createSprite(this, type).setPosition(slot.rect.x, slot.rect.y);
+		slot.text = this.add.bitmapText(slot.rect.x, slot.rect.y + 30, "nokia16").setOrigin(0.5).setCenterAlign().setDepth(2);
 	}
 
 	onResize(): void
